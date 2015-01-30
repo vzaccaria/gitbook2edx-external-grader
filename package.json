@@ -12,7 +12,9 @@
   "author": "Vittorio Zaccaria",
   "license": "BSD",
   "dependencies": {
+    "base64-url": "^1.2.0",
     "bluebird": "^2.8.2",
+    "co-body": "^1.0.0",
     "debug": "^2.1.1",
     "docopt": "~0.4.1",
     "koa": "^0.15.0",

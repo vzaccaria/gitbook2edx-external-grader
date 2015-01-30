@@ -6,6 +6,8 @@ fs     = require 'fs'
 $      = require 'bluebird'
 __     = require 'shelljs'
 koa    = require 'koa'
+parse = require 'co-body'
+b64 = require('base64-url')
 
 debug = require('debug')('server')
 
@@ -19,11 +21,21 @@ _module = ->
 
         app.use ->* 
             debug "request received"
+            console.log @
             if @method != 'POST'
-                @throw 404, 'sorry, only post methods allowed'
+                @throw 404, 'sorry, only POST methods allowed'
             else 
                 try 
-                    { student_response, grader_payload } = yield parse(@, {limit: '1kb'})
+                    data = {}
+                    req = (yield parse.json(@.req))
+                    semi = JSON.parse(req.xqueue_body)
+                    data.student_info = JSON.parse(semi.student_info)
+                    data.student_response = semi.student_response
+                    data.grader_payload = JSON.parse(semi.grader_payload).payload
+                    data.grader_payload = b64.decode(data.grader_payload)
+                    data.grader_payload = JSON.parse(data.grader_payload)
+                    console.log JSON.stringify(semi, 0, 4)
+                    console.log JSON.stringify(data, 0, 4)
                     /* launch grader */
                     @body = { correct: false, score: 0, msg: "sample msg"}
                 catch
