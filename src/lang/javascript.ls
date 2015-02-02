@@ -10,7 +10,7 @@ exec = $.promisify(__.exec)
 
 _module = ->
 
-    grade = (body) ->* 
+    grade = (body) -> 
         program = """
             #{body.code.context}
             #{body.student_response}
