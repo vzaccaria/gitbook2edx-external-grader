@@ -60,16 +60,37 @@ clean: clean-6 clean-7 clean-8
 
 .PHONY : cmd-9
 cmd-9: 
-	make all
+	./node_modules/.bin/xyz --increment major
+
+.PHONY : release-major
+release-major: cmd-9
 
 .PHONY : cmd-10
 cmd-10: 
+	./node_modules/.bin/xyz --increment minor
+
+.PHONY : release-minor
+release-minor: cmd-10
+
+.PHONY : cmd-11
+cmd-11: 
+	./node_modules/.bin/xyz --increment patch
+
+.PHONY : release-patch
+release-patch: cmd-11
+
+.PHONY : cmd-12
+cmd-12: 
+	make all
+
+.PHONY : cmd-13
+cmd-13: 
 	DEBUG=* nodemon -w lib -w ./index.js --exec './index.js'
 
-.PHONY : cmd-seq-11
-cmd-seq-11: 
-	make cmd-9
-	make cmd-10
+.PHONY : cmd-seq-14
+cmd-seq-14: 
+	make cmd-12
+	make cmd-13
 
 .PHONY : watch
-watch: cmd-seq-11
+watch: cmd-seq-14
