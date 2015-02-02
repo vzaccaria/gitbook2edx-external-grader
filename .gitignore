@@ -2,3 +2,6 @@ index.js
 lib/server.js
 src/server.js
 .build
+lib/grader.js
+lib/lang/javascript.js
+makefile.old
