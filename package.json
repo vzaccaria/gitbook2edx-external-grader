@@ -1,6 +1,6 @@
 {
   "name": "gitbook2edx-external-grader",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "external grader engine for edx",
   "bin": {
     "gitbook2edx-external-grader": "./index.js"
