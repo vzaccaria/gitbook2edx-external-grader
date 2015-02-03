@@ -1,0 +1,133 @@
+"use strict"
+
+_module = (_, moment, fs, $, __, co, debug, uid, os) ->
+    ->
+        cmd        = -> $.promisify(__.exec)(it, {+async})
+        writeAsync = $.promisify(fs.writeFile)
+        commands   = {}
+        temp-dir   = os.tmpdir()
+
+        default_limits = {
+            cpu:      1 # 1 second cpu-time
+            realtime: 1 # 1 second wall-time
+            fsize:    0 # number of files that can be created
+        }
+
+        setLimits = ->
+            default_limits := _.assign(default_limits, it)
+
+        configure = (command, binary_path, profile, user) ->
+
+            if not user?
+                user = 'sandbox'
+
+            commands[command] = {
+                cmdline_start: "#binary_path"
+                user: user
+                profile: profile
+                }
+
+        jail_code = (engine, code, argv, files, stdin) ->
+            co ->* 
+                command     = ""
+                sandbox-dir = "#temp-dir/#{uid(8)}"
+                result      = yield cmd("mkdir -p #sandbox-dir")
+                command     = command + "SANDBOXDIR=#sandbox-dir "
+
+                yield _.mapValues files, (content, name) ->
+                    writeAsync("#sandbox-dir/#name", content, 'utf-8')
+
+                yield writeAsync("#sandbox-dir/profile.aa", commands[engine].profile, 'utf-8')
+                yield writeAsync("#sandbox-dir/jailed.code", code, 'utf-8')
+
+                user = commands[engine].user
+
+                command = command + "sudo -u #user "
+
+                command = command + "aa-exec -p #sandbox-dir/profile.aa #{commands[engine].cmdline_start} #sandbox-dir/jailed.code"
+
+                output = yield cmd(command)
+                yield cmd("rm -rf #sandbox-dir")    
+                return output 
+
+        configure-all = (user) ->
+            profiles = require('./profiles')
+            for name, value of profiles
+                configure(name, value.path, value.aa, user)
+
+        simply-run = (engine, code) ->
+            configure-all('run-sandbox')
+            profiles = require('./profiles')
+
+            if not profiles[engine]?
+                throw "Sorry, no current profile for #engine"
+
+            return jail_code(engine, code, "", {},  "")
+                 
+              
+        iface = { 
+            configure: configure
+            jail_code: jail_code
+            run: simply-run
+            configure-all: configure-all
+        }
+      
+        return iface
+ 
+module.exports.common = _module(
+    require('lodash')
+    require 'moment'
+    require 'fs'
+    require 'bluebird'
+    require 'shelljs'
+    require 'co'
+    require('debug')('codejail')
+    require('uid')
+    require('os')
+    )()
+
+mfs = {}
+mshelljs = {}
+mos = {}
+
+
+mfs.writeFile = (name, content, mode, callback) ->
+    console.log "Writing to #name: #content"
+    callback(null, 'ok')
+
+mshelljs.exec = (command, opts, callback) ->
+    console.log "Executing: #command"
+    callback(0, 'ok')
+
+mos.tmpdir = ->
+    return "/fake/tmp"
+
+fakeuid = ->
+    return "fakeuid"
+
+
+module.exports.mocked = _module(
+    require('lodash')
+    require 'moment'
+    mfs
+    require 'bluebird'
+    mshelljs
+    require 'co'
+    require('debug')('codejail')
+    fakeuid
+    mos
+    )()
+
+module.exports.dry = _module(
+    require('lodash')
+    require 'moment'
+    mfs
+    require 'bluebird'
+    mshelljs
+    require 'co'
+    require('debug')('codejail')
+    require('uid')
+    require('os')   
+    )()
+
+
