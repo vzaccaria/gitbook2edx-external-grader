@@ -1,2 +1,3 @@
 .build
 makefile.old
+test/test0/output
