@@ -11,5 +11,5 @@ bindir=$srcdir/../..
 npm=$srcdir/../../node_modules/.bin
 
 ($bindir/index.js run -e 'mnode' 'console.log(require("fs").readdirSync("/"))') | sed -e '/tmp/d' > $srcdir/output
-$npm/diff-files -m "Test safe jail: should allow node printing a message" $srcdir/output $srcdir/reference
+$npm/diff-files -m "Test safe jail: should not allow node accessing root directory" $srcdir/output $srcdir/reference
 
