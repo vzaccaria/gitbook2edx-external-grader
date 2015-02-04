@@ -6,10 +6,26 @@ _module = ->
     iface = { 
 
         'node': 
-                path: "path/to/node"
+                path: "/usr/local/bin/node"
+                user: "node-sandbox"
                 aa: """
-                       this is the node profile 
+                    \#include <tunables/global>
+
+                    nodeScriptProfile {
+                        \#include <abstractions/base>
+                    }
                     """
+
+        'mnode': 
+                path: "/usr/local/bin/node"
+                aa: """
+                    \#include <tunables/global>
+
+                    nodeScriptProfile {
+                        \#include <abstractions/base>
+                    }
+                    """
+
 
         'octave': 
                 path: "path/to/octave"

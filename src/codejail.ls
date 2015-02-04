@@ -18,9 +18,6 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
 
         configure = (command, binary_path, profile, user) ->
 
-            if not user?
-                user = 'sandbox'
-
             commands[command] = {
                 cmdline_start: "#binary_path"
                 user: user
@@ -38,22 +35,29 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
                     writeAsync("#sandbox-dir/#name", content, 'utf-8')
 
                 yield writeAsync("#sandbox-dir/profile.aa", commands[engine].profile, 'utf-8')
+
+                code := "\#!#{commands[engine].cmdline_start}\n" + code
                 yield writeAsync("#sandbox-dir/jailed.code", code, 'utf-8')
+                yield cmd("chmod +x #sandbox-dir/jailed.code")
+
 
                 user = commands[engine].user
 
-                command = command + "sudo -u #user "
+                if user?
+                    command = command + "sudo -u #user "
+                else 
+                    command = command + "sudo "
 
-                command = command + "aa-exec -p #sandbox-dir/profile.aa #{commands[engine].cmdline_start} #sandbox-dir/jailed.code"
+                command = command + "aa-exec -p #sandbox-dir/profile.aa #sandbox-dir/jailed.code"
 
                 output = yield cmd(command)
                 yield cmd("rm -rf #sandbox-dir")    
                 return output 
 
-        configure-all = (user) ->
+        configure-all = ->
             profiles = require('./profiles')
             for name, value of profiles
-                configure(name, value.path, value.aa, user)
+                configure(name, value.path, value.aa, value.user)
 
         simply-run = (engine, code) ->
             configure-all('run-sandbox')
