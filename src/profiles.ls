@@ -13,6 +13,8 @@ _module = ->
 
                     #it {
                         \#include <abstractions/base>
+                        /usr/local/bin/node mr,
+                        #it mr,
                     }
                     """
 
@@ -22,6 +24,8 @@ _module = ->
                     \#include <tunables/global>
                     #it {
                         \#include <abstractions/base>
+                        /usr/local/bin/node mr,
+                        #it mr,
                     }
                     """
 

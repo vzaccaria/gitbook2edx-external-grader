@@ -10,4 +10,6 @@ dstdir=`pwd`
 bindir=$srcdir/../..
 npm=$srcdir/../../node_modules/.bin
 
-DEBUG=* $bindir/index.js run -e 'mnode' 'console.log("hi!")' 
+($bindir/index.js run -e 'mnode' 'console.log("hi!")') > $srcdir/output
+$npm/diff-files -m "Test safe jail: should allow node printing a message" $srcdir/output $srcdir/reference
+

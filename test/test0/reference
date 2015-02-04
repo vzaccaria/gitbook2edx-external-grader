@@ -5,6 +5,8 @@ Writing to /fake/tmp/fakeuid/profile.aa: #include <tunables/global>
 
 /fake/tmp/fakeuid/jailed.code {
     #include <abstractions/base>
+    /usr/local/bin/node mr,
+    /fake/tmp/fakeuid/jailed.code mr,
 }
 Executing: sudo apparmor_parser -a /fake/tmp/fakeuid/profile.aa
 Writing to /fake/tmp/fakeuid/jailed.code: #!/usr/local/bin/node
@@ -17,6 +19,8 @@ Executing: mkdir -p /fake/tmp/fakeuid
 Writing to /fake/tmp/fakeuid/profile.aa: #include <tunables/global>
 /fake/tmp/fakeuid/jailed.code {
     #include <abstractions/base>
+    /usr/local/bin/node mr,
+    /fake/tmp/fakeuid/jailed.code mr,
 }
 Executing: sudo apparmor_parser -a /fake/tmp/fakeuid/profile.aa
 Writing to /fake/tmp/fakeuid/jailed.code: #!/usr/local/bin/node
