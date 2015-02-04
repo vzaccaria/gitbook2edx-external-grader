@@ -1,0 +1,25 @@
+Executing: mkdir -p /fake/tmp/fakeuid
+Writing to /fake/tmp/fakeuid/f1: f1
+Writing to /fake/tmp/fakeuid/f2: f2
+Writing to /fake/tmp/fakeuid/profile.aa: #include <tunables/global>
+
+nodeScriptProfile {
+    #include <abstractions/base>
+}
+Writing to /fake/tmp/fakeuid/jailed.code: #!/usr/local/bin/node
+x+1
+Executing: chmod +x /fake/tmp/fakeuid/jailed.code
+Executing: SANDBOXDIR=/fake/tmp/fakeuid sudo -u node-sandbox aa-exec -p /fake/tmp/fakeuid/profile.aa /fake/tmp/fakeuid/jailed.code
+Executing: rm -rf /fake/tmp/fakeuid
+Executing: mkdir -p /fake/tmp/fakeuid
+Writing to /fake/tmp/fakeuid/profile.aa: #include <tunables/global>
+
+nodeScriptProfile {
+    #include <abstractions/base>
+}
+Writing to /fake/tmp/fakeuid/jailed.code: #!/usr/local/bin/node
+x+y+z
+Executing: chmod +x /fake/tmp/fakeuid/jailed.code
+Executing: SANDBOXDIR=/fake/tmp/fakeuid sudo aa-exec -p /fake/tmp/fakeuid/profile.aa /fake/tmp/fakeuid/jailed.code
+Executing: rm -rf /fake/tmp/fakeuid
+ok

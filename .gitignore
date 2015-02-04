@@ -1,3 +1,5 @@
 .build
 makefile.old
 test/test0/output
+test-local/test0/output
+node_modules

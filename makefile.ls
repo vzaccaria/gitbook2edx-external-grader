@@ -6,7 +6,7 @@ _ = require('lodash')
 parse ->
     @add-plugin "lsc", (g) ->
         cmd1 = -> "lsc -p -c #{it.orig-complete}"
-        echo = -> "echo '#!/usr/bin/env node --harmony'"
+        echo = -> "echo '#!/usr/local/bin/node --harmony'"
 
         app = (f1, f2) ->
             -> "(#{f1(it)} && #{f2(it)})"
@@ -39,7 +39,7 @@ parse ->
     ]
 
     @collect "test", -> [
-        @cmd "DEBUG=* node --harmony ./lib/codejail-test.js"
+        @cmd "./test/test.sh"
     ]
 
     for l in ["major", "minor", "patch"]

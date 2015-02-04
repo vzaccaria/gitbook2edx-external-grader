@@ -50,7 +50,7 @@ lib/codejail-test.js: .build/6-codejail-test.js
 	cp .build/6-codejail-test.js $@
 
 .build/7-index.js: ./index.ls
-	(echo '#!/usr/bin/env node --harmony' && lsc -p -c index.ls) > .build/7-index.js
+	(echo '#!/usr/local/bin/node --harmony' && lsc -p -c index.ls) > .build/7-index.js
 
 index.js: .build/7-index.js
 	@mkdir -p ./.
@@ -97,7 +97,7 @@ clean: clean-11 clean-12 clean-13
 
 .PHONY : cmd-14
 cmd-14: 
-	DEBUG=* node --harmony ./lib/codejail-test.js
+	./test/test.sh
 
 .PHONY : test
 test: cmd-14

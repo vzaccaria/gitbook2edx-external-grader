@@ -8,20 +8,19 @@ _module = ->
         'node': 
                 path: "/usr/local/bin/node"
                 user: "node-sandbox"
-                aa: """
+                aa: -> """
                     \#include <tunables/global>
 
-                    nodeScriptProfile {
+                    #it flags=(enforce) {
                         \#include <abstractions/base>
                     }
                     """
 
         'mnode': 
                 path: "/usr/local/bin/node"
-                aa: """
+                aa: -> """
                     \#include <tunables/global>
-
-                    nodeScriptProfile {
+                    #it flags=(enforce) {
                         \#include <abstractions/base>
                     }
                     """
@@ -29,7 +28,7 @@ _module = ->
 
         'octave': 
                 path: "path/to/octave"
-                aa: """
+                aa: -> """
                         this is the octave profile 
                     """
     }

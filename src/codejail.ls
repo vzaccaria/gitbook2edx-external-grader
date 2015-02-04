@@ -34,7 +34,7 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
                 yield _.mapValues files, (content, name) ->
                     writeAsync("#sandbox-dir/#name", content, 'utf-8')
 
-                yield writeAsync("#sandbox-dir/profile.aa", commands[engine].profile, 'utf-8')
+                yield writeAsync("#sandbox-dir/profile.aa", commands[engine].profile("#sandbox-dir/jailed.code"), 'utf-8')
 
                 code := "\#!#{commands[engine].cmdline_start}\n" + code
                 yield writeAsync("#sandbox-dir/jailed.code", code, 'utf-8')
@@ -48,10 +48,11 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
                 else 
                     command = command + "sudo "
 
-                command = command + "aa-exec -p #sandbox-dir/profile.aa #sandbox-dir/jailed.code"
+                command = command + "aa-exec -f #sandbox-dir/profile.aa #sandbox-dir/jailed.code"
 
                 output = yield cmd(command)
-                yield cmd("rm -rf #sandbox-dir")    
+                debug("#sandbox-dir")
+#                yield cmd("rm -rf #sandbox-dir")    
                 return output 
 
         configure-all = ->
