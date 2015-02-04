@@ -28,18 +28,22 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
             co ->* 
                 command     = ""
                 sandbox-dir = "#temp-dir/#{uid(8)}"
-                result      = yield cmd("mkdir -p #sandbox-dir")
+
+                yield cmd("mkdir -p #sandbox-dir")
+
                 command     = command + "SANDBOXDIR=#sandbox-dir "
 
                 yield _.mapValues files, (content, name) ->
                     writeAsync("#sandbox-dir/#name", content, 'utf-8')
 
                 yield writeAsync("#sandbox-dir/profile.aa", commands[engine].profile("#sandbox-dir/jailed.code"), 'utf-8')
+                yield cmd("sudo apparmor_parser -a #sandbox-dir/profile.aa")
 
                 code := "\#!#{commands[engine].cmdline_start}\n" + code
+
                 yield writeAsync("#sandbox-dir/jailed.code", code, 'utf-8')
                 yield cmd("chmod +x #sandbox-dir/jailed.code")
-
+		
 
                 user = commands[engine].user
 
@@ -50,10 +54,21 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
 
                 command = command + "aa-exec -f #sandbox-dir/profile.aa #sandbox-dir/jailed.code"
 
-                output = yield cmd(command)
-                debug("#sandbox-dir")
-#                yield cmd("rm -rf #sandbox-dir")    
-                return output 
+                var result
+                var success
+                try
+                    result := yield cmd(command)
+                    success := true
+                catch 
+                    result := e 
+                    success := false 
+
+                yield cmd("sudo apparmor_parser -R #sandbox-dir/profile.aa")
+                yield cmd("rm -rf #sandbox-dir")    
+                return { success, result }
+            .catch ->
+                return { -success, result: 'internal error' }	
+		
 
         configure-all = ->
             profiles = require('./profiles')

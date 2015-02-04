@@ -11,7 +11,7 @@ _module = ->
                 aa: -> """
                     \#include <tunables/global>
 
-                    #it flags=(enforce) {
+                    #it {
                         \#include <abstractions/base>
                     }
                     """
@@ -20,7 +20,7 @@ _module = ->
                 path: "/usr/local/bin/node"
                 aa: -> """
                     \#include <tunables/global>
-                    #it flags=(enforce) {
+                    #it {
                         \#include <abstractions/base>
                     }
                     """
