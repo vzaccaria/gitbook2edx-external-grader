@@ -1,0 +1,13 @@
+Executing: mkdir -p /fake/tmp/fakeuid
+Writing to /fake/tmp/fakeuid/f1: f1
+Writing to /fake/tmp/fakeuid/f2: f2
+Writing to /fake/tmp/fakeuid/profile.aa: this is the node profile 
+Writing to /fake/tmp/fakeuid/jailed.code: x+1
+Executing: SANDBOXDIR=/fake/tmp/fakeuid sudo -u sandbox aa-exec -p /fake/tmp/fakeuid/profile.aa path/to/node /fake/tmp/fakeuid/jailed.code
+Executing: rm -rf /fake/tmp/fakeuid
+Executing: mkdir -p /fake/tmp/fakeuid
+Writing to /fake/tmp/fakeuid/profile.aa: this is the node profile 
+Writing to /fake/tmp/fakeuid/jailed.code: x+y+z
+Executing: SANDBOXDIR=/fake/tmp/fakeuid sudo -u run-sandbox aa-exec -p /fake/tmp/fakeuid/profile.aa path/to/node /fake/tmp/fakeuid/jailed.code
+Executing: rm -rf /fake/tmp/fakeuid
+ok

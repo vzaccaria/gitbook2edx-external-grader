@@ -23,8 +23,8 @@ parse ->
             @toDir "./lib", { strip: ("src") },  -> 
                         @livescript ("./src/**/*.ls")
 
-            @toDir "./lib", { strip: ("test") },  -> 
-                        @livescript ("./test/**/*.ls")
+            @toDir "./lib", { strip: ("src/test") },  -> 
+                        @livescript ("./src/test/**/*.ls")
 
             @toDir ".", -> 
                 @lsc ("./index.ls")

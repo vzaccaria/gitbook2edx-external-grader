@@ -5,6 +5,9 @@
   "bin": {
     "gitbook2edx-external-grader": "./index.js"
   },
+  "scripts": {
+    "test": "./test/test.sh"
+  },
   "keywords": [],
   "author": "Vittorio Zaccaria",
   "license": "BSD",
@@ -14,6 +17,7 @@
     "co": "^4.1.0",
     "co-body": "^1.0.0",
     "debug": "^2.1.1",
+    "diff-files": "^0.1.0",
     "docopt": "~0.4.1",
     "koa": "^0.15.0",
     "lodash": "^2.4.1",
