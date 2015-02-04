@@ -15,6 +15,6 @@ for f in $srcdir/*
 do
 	# is it a directory?
 	if [ -d "$f" ]; then
-		cat $f/output 
+		diff $f/output $f/reference
 	fi
 done
