@@ -12,6 +12,7 @@
   "author": "Vittorio Zaccaria",
   "license": "BSD",
   "dependencies": {
+    "6to5": "^3.3.12",
     "base64-url": "^1.2.0",
     "bluebird": "^2.8.2",
     "chai": "^1.10.0",

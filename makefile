@@ -64,11 +64,14 @@ lib/server-test.js: .build/8-server-test.js
 	cp .build/8-server-test.js $@
 
 .build/9-index.js: ./index.ls
-	(echo '#!/usr/local/bin/node --harmony' && lsc -p -c index.ls) > .build/9-index.js
+	(echo '#!/usr/local/bin/node --harmony' && lsc -p -c index.ls | 6to5 ) > .build/9-index.js
 
 index.js: .build/9-index.js
 	@mkdir -p ./.
 	cp .build/9-index.js $@
+
+.PHONY : compile
+compile: lib/codejail.js lib/grader.js lib/lang/javascript.js lib/profiles.js lib/server.js lib/test/codejail-test.js lib/test/server-test.js lib/codejail-test.js lib/server-test.js index.js
 
 .PHONY : cmd-10
 cmd-10: 
@@ -80,16 +83,7 @@ cmd-11:
 
 .PHONY : cmd-seq-12
 cmd-seq-12: 
-	make lib/codejail.js
-	make lib/grader.js
-	make lib/lang/javascript.js
-	make lib/profiles.js
-	make lib/server.js
-	make lib/test/codejail-test.js
-	make lib/test/server-test.js
-	make lib/codejail-test.js
-	make lib/server-test.js
-	make index.js
+	make compile
 	make cmd-10
 	make cmd-11
 
@@ -108,53 +102,57 @@ clean-14:
 clean-15: 
 	mkdir -p .build
 
-.PHONY : clean
-clean: clean-13 clean-14 clean-15
-
 .PHONY : cmd-16
 cmd-16: 
-	./test/test.sh
+	rm -rf ./lib
+
+.PHONY : clean
+clean: clean-13 clean-14 clean-15 cmd-16
 
 .PHONY : cmd-17
 cmd-17: 
-	./node_modules/.bin/mocha --harmony ./lib/server-test.js
-
-.PHONY : test
-test: cmd-16 cmd-17
+	./test/test.sh
 
 .PHONY : cmd-18
 cmd-18: 
-	./node_modules/.bin/xyz --increment major
+	./node_modules/.bin/mocha --harmony ./lib/server-test.js
 
-.PHONY : release-major
-release-major: cmd-18
+.PHONY : test
+test: cmd-17 cmd-18
 
 .PHONY : cmd-19
 cmd-19: 
-	./node_modules/.bin/xyz --increment minor
+	./node_modules/.bin/xyz --increment major
 
-.PHONY : release-minor
-release-minor: cmd-19
+.PHONY : release-major
+release-major: cmd-19
 
 .PHONY : cmd-20
 cmd-20: 
-	./node_modules/.bin/xyz --increment patch
+	./node_modules/.bin/xyz --increment minor
 
-.PHONY : release-patch
-release-patch: cmd-20
+.PHONY : release-minor
+release-minor: cmd-20
 
 .PHONY : cmd-21
 cmd-21: 
-	make all
+	./node_modules/.bin/xyz --increment patch
+
+.PHONY : release-patch
+release-patch: cmd-21
 
 .PHONY : cmd-22
 cmd-22: 
+	make all
+
+.PHONY : cmd-23
+cmd-23: 
 	DEBUG=* nodemon -w lib -w ./index.js --exec './index.js'
 
-.PHONY : cmd-seq-23
-cmd-seq-23: 
-	make cmd-21
+.PHONY : cmd-seq-24
+cmd-seq-24: 
 	make cmd-22
+	make cmd-23
 
 .PHONY : watch
-watch: cmd-seq-23
+watch: cmd-seq-24

@@ -1,4 +1,3 @@
-
 { configure, jail_code, run, configure-all } = require('./codejail').mocked
 
 configure-all()

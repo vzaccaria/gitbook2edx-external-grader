@@ -4,8 +4,9 @@ _ = require('lodash')
 { parse, add-plugin } = require('newmake')
 
 parse ->
+
     @add-plugin "lsc", (g) ->
-        cmd1 = -> "lsc -p -c #{it.orig-complete}"
+        cmd1 = -> "lsc -p -c #{it.orig-complete} | 6to5 "
         echo = -> "echo '#!/usr/local/bin/node --harmony'"
 
         app = (f1, f2) ->
@@ -20,22 +21,24 @@ parse ->
     @collect "all", -> 
         @command-seq -> [
 
-            @toDir "./lib", { strip: ("src") },  -> 
-                        @livescript ("./src/**/*.ls")
+            @collect "compile", -> [
+                @toDir "./lib", { strip: "src" }, -> 
+                    @livescript ("./src/**/*.ls")
 
-            @toDir "./lib", { strip: ("src/test") },  -> 
-                        @livescript ("./src/test/**/*.ls")
+                @toDir "./lib", { strip: "src/test" }, -> 
+                    @livescript ("./src/test/**/*.ls")
 
-            @toDir ".", -> 
-                @lsc ("./index.ls")
+                @toDir ".", -> 
+                    @lsc ("./index.ls")
+            ]
 
             @cmd "chmod +x ./index.js"
-
             @make 'test'
         ]
 
     @collect "clean", -> [
         @remove-all-targets()
+        @cmd "rm -rf ./lib"
     ]
 
     @collect "test", -> [

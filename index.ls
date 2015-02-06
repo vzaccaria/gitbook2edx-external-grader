@@ -1,4 +1,3 @@
-
 {docopt} = require('docopt')
 require! 'fs'
 
