@@ -18,6 +18,9 @@
 .build/5-codejail-test.js: ./src/test/codejail-test.ls
 	lsc -p -c src/test/codejail-test.ls > .build/5-codejail-test.js
 
+.build/6-server-test.js: ./src/test/server-test.ls
+	lsc -p -c src/test/server-test.ls > .build/6-server-test.js
+
 lib/codejail.js: .build/0-codejail.js
 	@mkdir -p ./lib/
 	cp .build/0-codejail.js $@
@@ -42,99 +45,116 @@ lib/test/codejail-test.js: .build/5-codejail-test.js
 	@mkdir -p ./lib//test
 	cp .build/5-codejail-test.js $@
 
-.build/6-codejail-test.js: ./src/test/codejail-test.ls
-	lsc -p -c src/test/codejail-test.ls > .build/6-codejail-test.js
+lib/test/server-test.js: .build/6-server-test.js
+	@mkdir -p ./lib//test
+	cp .build/6-server-test.js $@
 
-lib/codejail-test.js: .build/6-codejail-test.js
+.build/7-codejail-test.js: ./src/test/codejail-test.ls
+	lsc -p -c src/test/codejail-test.ls > .build/7-codejail-test.js
+
+.build/8-server-test.js: ./src/test/server-test.ls
+	lsc -p -c src/test/server-test.ls > .build/8-server-test.js
+
+lib/codejail-test.js: .build/7-codejail-test.js
 	@mkdir -p ./lib/
-	cp .build/6-codejail-test.js $@
+	cp .build/7-codejail-test.js $@
 
-.build/7-index.js: ./index.ls
-	(echo '#!/usr/local/bin/node --harmony' && lsc -p -c index.ls) > .build/7-index.js
+lib/server-test.js: .build/8-server-test.js
+	@mkdir -p ./lib/
+	cp .build/8-server-test.js $@
 
-index.js: .build/7-index.js
+.build/9-index.js: ./index.ls
+	(echo '#!/usr/local/bin/node --harmony' && lsc -p -c index.ls) > .build/9-index.js
+
+index.js: .build/9-index.js
 	@mkdir -p ./.
-	cp .build/7-index.js $@
+	cp .build/9-index.js $@
 
-.PHONY : cmd-8
-cmd-8: 
+.PHONY : cmd-10
+cmd-10: 
 	chmod +x ./index.js
 
-.PHONY : cmd-9
-cmd-9: 
+.PHONY : cmd-11
+cmd-11: 
 	make test
 
-.PHONY : cmd-seq-10
-cmd-seq-10: 
+.PHONY : cmd-seq-12
+cmd-seq-12: 
 	make lib/codejail.js
 	make lib/grader.js
 	make lib/lang/javascript.js
 	make lib/profiles.js
 	make lib/server.js
 	make lib/test/codejail-test.js
+	make lib/test/server-test.js
 	make lib/codejail-test.js
+	make lib/server-test.js
 	make index.js
-	make cmd-8
-	make cmd-9
+	make cmd-10
+	make cmd-11
 
 .PHONY : all
-all: cmd-seq-10
-
-.PHONY : clean-11
-clean-11: 
-	rm -rf .build/0-codejail.js .build/1-grader.js .build/2-javascript.js .build/3-profiles.js .build/4-server.js .build/5-codejail-test.js lib/codejail.js lib/grader.js lib/lang/javascript.js lib/profiles.js lib/server.js lib/test/codejail-test.js .build/6-codejail-test.js lib/codejail-test.js .build/7-index.js index.js
-
-.PHONY : clean-12
-clean-12: 
-	rm -rf .build
+all: cmd-seq-12
 
 .PHONY : clean-13
 clean-13: 
+	rm -rf .build/0-codejail.js .build/1-grader.js .build/2-javascript.js .build/3-profiles.js .build/4-server.js .build/5-codejail-test.js .build/6-server-test.js lib/codejail.js lib/grader.js lib/lang/javascript.js lib/profiles.js lib/server.js lib/test/codejail-test.js lib/test/server-test.js .build/7-codejail-test.js .build/8-server-test.js lib/codejail-test.js lib/server-test.js .build/9-index.js index.js
+
+.PHONY : clean-14
+clean-14: 
+	rm -rf .build
+
+.PHONY : clean-15
+clean-15: 
 	mkdir -p .build
 
 .PHONY : clean
-clean: clean-11 clean-12 clean-13
-
-.PHONY : cmd-14
-cmd-14: 
-	./test/test.sh
-
-.PHONY : test
-test: cmd-14
-
-.PHONY : cmd-15
-cmd-15: 
-	./node_modules/.bin/xyz --increment major
-
-.PHONY : release-major
-release-major: cmd-15
+clean: clean-13 clean-14 clean-15
 
 .PHONY : cmd-16
 cmd-16: 
-	./node_modules/.bin/xyz --increment minor
-
-.PHONY : release-minor
-release-minor: cmd-16
+	./test/test.sh
 
 .PHONY : cmd-17
 cmd-17: 
-	./node_modules/.bin/xyz --increment patch
+	./node_modules/.bin/mocha --harmony ./lib/server-test.js
 
-.PHONY : release-patch
-release-patch: cmd-17
+.PHONY : test
+test: cmd-16 cmd-17
 
 .PHONY : cmd-18
 cmd-18: 
-	make all
+	./node_modules/.bin/xyz --increment major
+
+.PHONY : release-major
+release-major: cmd-18
 
 .PHONY : cmd-19
 cmd-19: 
+	./node_modules/.bin/xyz --increment minor
+
+.PHONY : release-minor
+release-minor: cmd-19
+
+.PHONY : cmd-20
+cmd-20: 
+	./node_modules/.bin/xyz --increment patch
+
+.PHONY : release-patch
+release-patch: cmd-20
+
+.PHONY : cmd-21
+cmd-21: 
+	make all
+
+.PHONY : cmd-22
+cmd-22: 
 	DEBUG=* nodemon -w lib -w ./index.js --exec './index.js'
 
-.PHONY : cmd-seq-20
-cmd-seq-20: 
-	make cmd-18
-	make cmd-19
+.PHONY : cmd-seq-23
+cmd-seq-23: 
+	make cmd-21
+	make cmd-22
 
 .PHONY : watch
-watch: cmd-seq-20
+watch: cmd-seq-23
