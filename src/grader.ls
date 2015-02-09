@@ -1,29 +1,25 @@
+"use strict"
 
-_               = require('lodash')
-moment          = require 'moment'
-fs              = require 'fs'
-$               = require 'bluebird'
-__              = require 'shelljs'
+_module = (_, debug) ->
 
-debug = require('debug')('grader')
+    debug = debug('grader')
 
-
-
-
-_module = ->
-
-    grade = (payload) ->
+    grade = (response, payload) ->*
+        console.log payload
         if payload.lang?
                 grader-api = require "./lang/#{payload.lang}"
-                return grader-api.grade(payload)
+                return grader-api.grade(response, payload)
         else
-            throw "Sorry, you need to specify a valid grader."
+            throw "Sorry, #{payload.lang} is invalid"
           
     iface = { 
         grade: grade
     }
   
     return iface
- 
-module.exports = _module()
+
+module.exports = _module(
+    require("lodash"),
+    require("debug")
+    )
 

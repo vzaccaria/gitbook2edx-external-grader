@@ -43,7 +43,7 @@ parse ->
 
     @collect "test", -> [
         @cmd "./test/test.sh"
-        @cmd "./node_modules/.bin/mocha --harmony ./lib/server-test.js"
+        @cmd "DEBUG=* ./node_modules/.bin/mocha -C --harmony ./lib/server-test.js"
     ]
 
     for l in ["major", "minor", "patch"]

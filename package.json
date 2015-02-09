@@ -6,7 +6,8 @@
     "gitbook2edx-external-grader": "./index.js"
   },
   "scripts": {
-    "test": "./test/test.sh"
+    "test": "make test",
+    "test-local": "./test-local/test.sh"
   },
   "keywords": [],
   "author": "Vittorio Zaccaria",

@@ -4,7 +4,7 @@ fs              = require 'fs'
 $               = require 'bluebird'
 __              = require 'shelljs'
 
-debug = require('debug')('javascript')
+debug = require('debug')('fakelang')
 
 exec = $.promisify(__.exec)
 
@@ -19,12 +19,13 @@ _module = ->
             #{payload.validation}
         """
         try 
-            debug(program)
+            if payload.validation == "bombit"
+                throw "Ouch!"
             result = program
         catch 
-            return { -correct, score: 0, msg: "noo! try again." }
+            return { -correct, score: 0, msg: "noo! it failed"}
 
-        return { +correct, score: 1, msg: "ok!" }
+        return { +correct, score: 1, msg: program }
           
     iface = { 
         grade: grade
