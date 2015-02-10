@@ -33,7 +33,7 @@ parse ->
             ]
 
             @cmd "chmod +x ./index.js"
-            @make 'test'
+
         ]
 
     @collect "clean", -> [
@@ -66,6 +66,10 @@ parse ->
 
     @collect "stop", -> [
         @cmd  "./node_modules/.bin/pm2 delete all"
+        ]
+
+    @collect "monit", -> [
+        @cmd  "./node_modules/.bin/pm2 monit"
         ]
 
     @collect "s", -> [
