@@ -29,7 +29,7 @@ get-options = ->
 
 
 configure-cli-dependencies = (is-it-dry) ->
-    { configure } = require('./das')
+    { configure } = require('./lib/das')
 
     dryWrite = (name, content, mode, callback) ->
                         console.log "Writing to #name: #content"

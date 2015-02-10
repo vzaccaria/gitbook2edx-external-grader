@@ -40,7 +40,7 @@
   };
   configureCliDependencies = function(isItDry){
     var configure, dryWrite, dryExec;
-    configure = require('./das').configure;
+    configure = require('./lib/das').configure;
     dryWrite = function(name, content, mode, callback){
       console.log("Writing to " + name + ": " + content);
       return callback(null, 'ok');
