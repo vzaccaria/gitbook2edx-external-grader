@@ -46,6 +46,7 @@ parse ->
         @cmd "./node_modules/.bin/mocha -C --harmony ./lib/server-test.js"
     ]
 
+
     for l in ["major", "minor", "patch"]
 
         @collect "release-#l", -> [

@@ -40,12 +40,20 @@ configure-cli-dependencies = (is-it-dry) ->
         callback(0, 'ok')
 
     if is-it-dry
-        configure({
-            'fs': { writeFile: dryWrite }
-            'shelljs': { exec: dryExec }
-            'os': 'os'
-            'uid': 'uid'
-        })
+        if require('os').platform() != 'darwin'
+            configure({
+                'fs': { writeFile: dryWrite }
+                'shelljs': { exec: dryExec }
+                'os': 'os'
+                'uid': 'uid'
+            })
+        else 
+            configure({
+                'fs': { writeFile: dryWrite }
+                'shelljs': { exec: dryExec }
+                'os': { tmpdir: -> "faketmp" }
+                'uid': -> 'fakeuid'
+            })        
     else 
         configure({
             'fs': 'fs' 
@@ -62,7 +70,7 @@ main = ->
 
     else 
         { code, engine, dry } = get-options!
-        configure-cli-dependencies(dry)!
+        configure-cli-dependencies(dry)
         require('./lib/codejail').run(engine, code)
 
 

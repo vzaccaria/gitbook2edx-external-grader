@@ -1,0 +1,32 @@
+Executing: mkdir -p /fake/tmp/fakeuid
+Writing to /fake/tmp/fakeuid/f1: f1
+Writing to /fake/tmp/fakeuid/f2: f2
+Writing to /fake/tmp/fakeuid/profile.aa: #include <tunables/global>
+
+/fake/tmp/fakeuid/jailed.code {
+    #include <abstractions/base>
+    /usr/local/bin/node mr,
+    /fake/tmp/fakeuid/jailed.code mr,
+}
+Executing: sudo apparmor_parser -a /fake/tmp/fakeuid/profile.aa
+Writing to /fake/tmp/fakeuid/jailed.code: #!/usr/local/bin/node
+x+1
+Executing: chmod +x /fake/tmp/fakeuid/jailed.code
+Executing: SANDBOXDIR=/fake/tmp/fakeuid sudo -u node-sandbox aa-exec -f /fake/tmp/fakeuid/profile.aa /fake/tmp/fakeuid/jailed.code
+Executing: sudo apparmor_parser -R /fake/tmp/fakeuid/profile.aa
+Executing: rm -rf /fake/tmp/fakeuid
+Executing: mkdir -p /fake/tmp/fakeuid
+Writing to /fake/tmp/fakeuid/profile.aa: #include <tunables/global>
+/fake/tmp/fakeuid/jailed.code {
+    #include <abstractions/base>
+    /usr/local/bin/node mr,
+    /fake/tmp/fakeuid/jailed.code mr,
+}
+Executing: sudo apparmor_parser -a /fake/tmp/fakeuid/profile.aa
+Writing to /fake/tmp/fakeuid/jailed.code: #!/usr/local/bin/node
+x+y+z
+Executing: chmod +x /fake/tmp/fakeuid/jailed.code
+Executing: SANDBOXDIR=/fake/tmp/fakeuid sudo aa-exec -f /fake/tmp/fakeuid/profile.aa /fake/tmp/fakeuid/jailed.code
+Executing: sudo apparmor_parser -R /fake/tmp/fakeuid/profile.aa
+Executing: rm -rf /fake/tmp/fakeuid
+{ success: true, result: 'ok' }

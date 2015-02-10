@@ -10,8 +10,9 @@ dstdir=`pwd`
 bindir=$srcdir/..
 npm=$srcdir/../node_modules/.bin
 
+platform=`node -e 'console.log(require("os").platform());'`
 
-for f in $srcdir/*
+for f in $srcdir/$platform/*
 do
 	# is it a directory?
 	if [ -d "$f" ]; then

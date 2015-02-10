@@ -50,16 +50,35 @@
       return callback(0, 'ok');
     };
     if (isItDry) {
-      return configure({
-        'fs': {
-          writeFile: dryWrite
-        },
-        'shelljs': {
-          exec: dryExec
-        },
-        'os': 'os',
-        'uid': 'uid'
-      });
+      if (require('os').platform() !== 'darwin') {
+        return configure({
+          'fs': {
+            writeFile: dryWrite
+          },
+          'shelljs': {
+            exec: dryExec
+          },
+          'os': 'os',
+          'uid': 'uid'
+        });
+      } else {
+        return configure({
+          'fs': {
+            writeFile: dryWrite
+          },
+          'shelljs': {
+            exec: dryExec
+          },
+          'os': {
+            tmpdir: function(){
+              return "faketmp";
+            }
+          },
+          'uid': function(){
+            return 'fakeuid';
+          }
+        });
+      }
     } else {
       return configure({
         'fs': 'fs',
@@ -77,7 +96,7 @@
       return server.bringup(port);
     } else {
       ref$ = getOptions(), code = ref$.code, engine = ref$.engine, dry = ref$.dry;
-      configureCliDependencies(dry)();
+      configureCliDependencies(dry);
       return require('./lib/codejail').run(engine, code);
     }
   };

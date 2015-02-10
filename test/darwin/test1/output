@@ -1,0 +1,15 @@
+Executing: mkdir -p faketmp/fakeuid
+Writing to faketmp/fakeuid/profile.aa: #include <tunables/global>
+
+faketmp/fakeuid/jailed.code {
+    #include <abstractions/base>
+    /usr/local/bin/node mr,
+    faketmp/fakeuid/jailed.code mr,
+}
+Executing: sudo apparmor_parser -a faketmp/fakeuid/profile.aa
+Writing to faketmp/fakeuid/jailed.code: #!/usr/local/bin/node
+var x=1
+Executing: chmod +x faketmp/fakeuid/jailed.code
+Executing: SANDBOXDIR=faketmp/fakeuid sudo -u node-sandbox aa-exec -f faketmp/fakeuid/profile.aa faketmp/fakeuid/jailed.code
+Executing: sudo apparmor_parser -R faketmp/fakeuid/profile.aa
+Executing: rm -rf faketmp/fakeuid
