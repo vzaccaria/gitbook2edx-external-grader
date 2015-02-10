@@ -9,6 +9,8 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
         commands   = {}
         temp-dir   = os.tmpdir()
 
+        { deploy-profile, run-profile, remove-profile } = require './armor'
+
         default_limits = {
             cpu:      1 # 1 second cpu-time
             realtime: 1 # 1 second wall-time
@@ -38,8 +40,7 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
                 yield _.mapValues files, (content, name) ->
                     writeAsync("#sandbox-dir/#name", content, 'utf-8')
 
-                yield writeAsync("#sandbox-dir/profile.aa", commands[engine].profile("#sandbox-dir/jailed.code"), 'utf-8')
-                yield cmd("sudo apparmor_parser -a #sandbox-dir/profile.aa")
+                yield deploy-profile("#sandbox-dir/profile.aa", commands[engine].profile("#sandbox-dir/jailed.code"))
 
                 code := "\#!#{commands[engine].cmdline_start}\n" + code
 
@@ -48,13 +49,7 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
 		
 
                 user = commands[engine].user
-
-                if user?
-                    command = command + "sudo -u #user "
-                else 
-                    command = command + "sudo "
-
-                command = command + "aa-exec -f #sandbox-dir/profile.aa #sandbox-dir/jailed.code"
+                command = command + run-profile(user, "#sandbox-dir/profile.aa", "#sandbox-dir/jailed.code")
 
                 var result
                 var success
@@ -65,7 +60,7 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
                     result := e 
                     success := false 
 
-                yield cmd("sudo apparmor_parser -R #sandbox-dir/profile.aa")
+                yield remove-profile "#sandbox-dir/profile.aa"
                 yield cmd("rm -rf #sandbox-dir")    
                 return { success, result }
             .catch ->
