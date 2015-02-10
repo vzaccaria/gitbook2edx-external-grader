@@ -4,7 +4,6 @@ _module = (_, moment, fs, $, __, koa, co-body, b64, debug, grader) ->
     var app
     debug     = debug 'server'
     { grade } = grader
-    console.log grade
     create = ->
         app := koa()
 
@@ -38,8 +37,8 @@ _module = (_, moment, fs, $, __, koa, co-body, b64, debug, grader) ->
         return app
 
     bringup = (port) ->
-        return create!.listen(port)
         debug "listening on: http://localhost:#port"
+        return create!.listen(port)
 
     iface = { 
         create: create

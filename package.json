@@ -13,7 +13,6 @@
   "author": "Vittorio Zaccaria",
   "license": "BSD",
   "dependencies": {
-    "6to5": "^3.3.12",
     "base64-url": "^1.2.0",
     "bluebird": "^2.8.2",
     "chai": "^1.10.0",
@@ -28,6 +27,7 @@
     "lodash": "^2.4.1",
     "mocha-co": "^1.17.1-co.1",
     "moment": "^2.9.0",
+    "pm2": "^0.12.5",
     "shelljs": "^0.3.0",
     "supertest": "^0.15.0",
     "uid": "0.0.2",

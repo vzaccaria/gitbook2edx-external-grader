@@ -10,6 +10,21 @@
 {%= partial("usage.md") %}
 ```
 
+## Running
+
+The makefile has two targets (`start` and `stop`) to make you run the grader in server mode and expose it to the internet. These targets use `pm2` to start and stop both the grader and an `ngrok` server. The ngrok server should be configured with an `.ngrok` file; this is my `~/.ngrok` file:
+
+```
+auth_token: your auth token
+tunnels:
+    grader:
+        subdomain: "grader.cms.zaccaria"
+        proto:
+            http: 1666
+```
+
+After `ngrok` started, the server is reachable in this case at: `http://grader.cms.zaccaria.ngrok.com`. This is the address to use for the Edx push `xqueue`.
+
 ## Tests
 
 Tests are categorized in three parts:

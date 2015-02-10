@@ -1,0 +1,13 @@
+[{
+	"name": "grader",
+	"node_args": "--harmony",
+	"script": "./index.js",
+	"args": ["serve"],
+	"exec_interpreter" : "node",
+	"env": {
+		"DEBUG": "*"
+	}
+}]
+
+
+

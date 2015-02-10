@@ -6,7 +6,7 @@ _ = require('lodash')
 parse ->
 
     @add-plugin "lsc", (g) ->
-        cmd1 = -> "lsc -p -c #{it.orig-complete} | 6to5 "
+        cmd1 = -> "lsc -p -c #{it.orig-complete}"
         echo = -> "echo '#!/usr/local/bin/node --harmony'"
 
         app = (f1, f2) ->
@@ -43,7 +43,7 @@ parse ->
 
     @collect "test", -> [
         @cmd "./test/test.sh"
-        @cmd "DEBUG=* ./node_modules/.bin/mocha -C --harmony ./lib/server-test.js"
+        @cmd "./node_modules/.bin/mocha -C --harmony ./lib/server-test.js"
     ]
 
     for l in ["major", "minor", "patch"]
@@ -52,9 +52,27 @@ parse ->
             @cmd "./node_modules/.bin/xyz --increment #l"
         ]
 
-    @collect "watch", -> 
+    # @collect "watch", -> 
+    #     @command-seq -> [
+    #         @make 'all'
+    #         @cmd "DEBUG=* nodemon -w lib -w ./index.js --exec './index.js'"
+    #         ]
+
+    @collect "start", -> [
         @command-seq -> [
-            @make 'all'
-            @cmd "DEBUG=* nodemon -w lib -w ./index.js --exec './index.js'"
+            @make "all"
+            @cmd  "./node_modules/.bin/pm2 start ./grader.json"
+            @cmd  "./node_modules/.bin/pm2 start /usr/local/bin/ngrok --interpreter none -x -- start grader"
+            @cmd  "./node_modules/.bin/pm2 logs grader"
+            @cmd  "echo 'Connect to http://localhost:4040 to watch for incoming traffic"
             ]
+        ]
+
+    @collect "stop", -> [
+        @cmd  "./node_modules/.bin/pm2 delete all"
+        ]
+
+    @collect "s", -> [
+        @cmd "./node_modules/.bin/pm2 status"
+        ]
 

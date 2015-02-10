@@ -5,7 +5,6 @@ _module = (_, debug) ->
     debug = debug('grader')
 
     grade = (response, payload) ->*
-        console.log payload
         if payload.lang?
                 grader-api = require "./lang/#{payload.lang}"
                 return grader-api.grade(response, payload)

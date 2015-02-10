@@ -71,7 +71,7 @@ lib/server-test.js: .build/9-server-test.js
 	cp .build/9-server-test.js $@
 
 .build/10-index.js: ./index.ls
-	(echo '#!/usr/local/bin/node --harmony' && lsc -p -c index.ls | 6to5 ) > .build/10-index.js
+	(echo '#!/usr/local/bin/node --harmony' && lsc -p -c index.ls) > .build/10-index.js
 
 index.js: .build/10-index.js
 	@mkdir -p ./.
@@ -122,7 +122,7 @@ cmd-18:
 
 .PHONY : cmd-19
 cmd-19: 
-	DEBUG=* ./node_modules/.bin/mocha -C --harmony ./lib/server-test.js
+	./node_modules/.bin/mocha -C --harmony ./lib/server-test.js
 
 .PHONY : test
 test: cmd-18 cmd-19
@@ -154,12 +154,41 @@ cmd-23:
 
 .PHONY : cmd-24
 cmd-24: 
-	DEBUG=* nodemon -w lib -w ./index.js --exec './index.js'
+	./node_modules/.bin/pm2 start ./grader.json
 
-.PHONY : cmd-seq-25
-cmd-seq-25: 
+.PHONY : cmd-25
+cmd-25: 
+	./node_modules/.bin/pm2 start /usr/local/bin/ngrok --interpreter none -x -- start grader
+
+.PHONY : cmd-26
+cmd-26: 
+	./node_modules/.bin/pm2 logs grader
+
+.PHONY : cmd-27
+cmd-27: 
+	echo 'Connect to http://localhost:4040 to watch for incoming traffic
+
+.PHONY : cmd-seq-28
+cmd-seq-28: 
 	make cmd-23
 	make cmd-24
+	make cmd-25
+	make cmd-26
+	make cmd-27
 
-.PHONY : watch
-watch: cmd-seq-25
+.PHONY : start
+start: cmd-seq-28
+
+.PHONY : cmd-29
+cmd-29: 
+	./node_modules/.bin/pm2 delete all
+
+.PHONY : stop
+stop: cmd-29
+
+.PHONY : cmd-30
+cmd-30: 
+	./node_modules/.bin/pm2 status
+
+.PHONY : s
+s: cmd-30

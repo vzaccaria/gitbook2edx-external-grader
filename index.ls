@@ -4,6 +4,8 @@ require! 'fs'
 shelljs = require('shelljs')
 server  = require('./lib/server')
 
+exec = require('bluebird').promisify(shelljs.exec)
+
 get-options = ->
     doc = shelljs.cat(__dirname+"/docs/usage.md")
 
@@ -30,6 +32,7 @@ main = ->
     if serve 
         { port } = get-options!
         server.bringup(port)
+
     else 
         { code, engine, dry } = get-options!
         if dry 
