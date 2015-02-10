@@ -77,12 +77,8 @@
       return server.bringup(port);
     } else {
       ref$ = getOptions(), code = ref$.code, engine = ref$.engine, dry = ref$.dry;
-      configureCliDependencies();
-      if (dry) {
-        return require('./lib/codejail').mocked.run(engine, code);
-      } else {
-        return require('./lib/codejail').mocked.run(engine, code);
-      }
+      configureCliDependencies(dry)();
+      return require('./lib/codejail').run(engine, code);
     }
   };
   main();

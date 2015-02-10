@@ -62,11 +62,8 @@ main = ->
 
     else 
         { code, engine, dry } = get-options!
-        configure-cli-dependencies!
-        if dry 
-            require('./lib/codejail').mocked.run(engine, code)
-        else
-            require('./lib/codejail').mocked.run(engine, code)
+        configure-cli-dependencies(dry)!
+        require('./lib/codejail').run(engine, code)
 
 
 main!
