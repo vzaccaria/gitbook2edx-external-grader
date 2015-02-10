@@ -52,11 +52,6 @@ parse ->
             @cmd "./node_modules/.bin/xyz --increment #l"
         ]
 
-    # @collect "watch", -> 
-    #     @command-seq -> [
-    #         @make 'all'
-    #         @cmd "DEBUG=* nodemon -w lib -w ./index.js --exec './index.js'"
-    #         ]
 
     @collect "start", -> [
         @command-seq -> [

@@ -1,5 +1,7 @@
 "use strict"
 
+{ required } = require('./das')
+
 _module = (_, moment, fs, $, __, co, debug, uid, os) ->
     ->
         cmd        = -> $.promisify(__.exec)(it, {+async})
@@ -94,60 +96,17 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
       
         return iface
  
-module.exports.common = _module(
+module.exports = _module(
     require('lodash')
     require 'moment'
-    require 'fs'
+    required! 'fs' 
     require 'bluebird'
-    require 'shelljs'
+    required! 'shelljs'
     require 'co'
     require('debug')('codejail')
-    require('uid')
-    require('os')
+    required! 'uid'
+    required! 'os'
     )()
 
-mfs = {}
-mshelljs = {}
-mos = {}
-
-
-mfs.writeFile = (name, content, mode, callback) ->
-    console.log "Writing to #name: #content"
-    callback(null, 'ok')
-
-mshelljs.exec = (command, opts, callback) ->
-    console.log "Executing: #command"
-    callback(0, 'ok')
-
-mos.tmpdir = ->
-    return "/fake/tmp"
-
-fakeuid = ->
-    return "fakeuid"
-
-
-module.exports.mocked = _module(
-    require('lodash')
-    require 'moment'
-    mfs
-    require 'bluebird'
-    mshelljs
-    require 'co'
-    require('debug')('codejail')
-    fakeuid
-    mos
-    )()
-
-module.exports.dry = _module(
-    require('lodash')
-    require 'moment'
-    mfs
-    require 'bluebird'
-    mshelljs
-    require 'co'
-    require('debug')('codejail')
-    require('uid')
-    require('os')   
-    )()
 
 

@@ -27,6 +27,33 @@ get-options = ->
     else
         return { serve: true, run: false, port: port }
 
+
+configure-cli-dependencies = (is-it-dry) ->
+    { configure } = require('./das')
+
+    dryWrite = (name, content, mode, callback) ->
+                        console.log "Writing to #name: #content"
+                        callback(null, 'ok')
+
+    dryExec = (command, opts, callback) ->
+        console.log "Executing: #command"
+        callback(0, 'ok')
+
+    if is-it-dry
+        configure({
+            'fs': { writeFile: dryWrite }
+            'shelljs': { exec: dryExec }
+            'os': 'os'
+            'uid': 'uid'
+        })
+    else 
+        configure({
+            'fs': 'fs' 
+            'shelljs': 'shelljs'
+            'os': 'os'
+            'uid': 'uid'
+        })        
+
 main = ->
     { serve, run } = get-options!
     if serve 
@@ -35,10 +62,11 @@ main = ->
 
     else 
         { code, engine, dry } = get-options!
+        configure-cli-dependencies!
         if dry 
-            require('./lib/codejail').dry.run(engine, code)
+            require('./lib/codejail').mocked.run(engine, code)
         else
-            require('./lib/codejail').common.run(engine, code)
+            require('./lib/codejail').mocked.run(engine, code)
 
 
 main!
