@@ -2,6 +2,8 @@
 
 > {%= description %}
 
+**Warning:** Still in the experimental stage; may break at any moment.
+
 {%= include("install-global") %}
 
 ## General help 

@@ -2,6 +2,8 @@
 
 > external grader engine for edx
 
+**Warning:** Still in the experimental stage; may break at any moment.
+
 ## Install globally with [npm](npmjs.org):
 
 ```bash
