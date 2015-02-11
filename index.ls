@@ -27,6 +27,14 @@ get-options = ->
     else
         return { serve: true, run: false, port: port }
 
+configure-server-dependencies = ->
+    { configure } = require('./lib/das')
+    configure({
+            'fs': 'fs' 
+            'shelljs': 'shelljs'
+            'os': 'os'
+            'uid': 'uid'
+    })   
 
 configure-cli-dependencies = (is-it-dry) ->
     { configure } = require('./lib/das')

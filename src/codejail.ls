@@ -81,12 +81,11 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
 
             return jail_code(engine, code, "", {},  "")
                  
-              
+        configure-all!
+
         iface = { 
-            configure: configure
             jail_code: jail_code
             run: simply-run
-            configure-all: configure-all
         }
       
         return iface

@@ -25,13 +25,13 @@ _module = (_, moment, fs, $, __, koa, co-body, b64, debug, grader) ->
                     data.grader_payload = JSON.parse(semi.grader_payload).payload
                     data.grader_payload = b64.decode(data.grader_payload)
                     data.grader_payload = JSON.parse(data.grader_payload)
-                    /* launch grader */
+                    debug data.grader_payload
                     grader-response = yield grade(data.student_response, data.grader_payload)
                     @body = grader-response
                 catch 
                     debug(e)
                     @response.status = 406
-                    @response.statusMessage = e
+                    @response.body = { message: e }
 
         debug "koa post method registered"
         return app

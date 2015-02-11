@@ -11,4 +11,4 @@ bindir=$srcdir/../../..
 npm=$bindir/node_modules/.bin
 
 $bindir/index.js run 'var x=1' -d > $srcdir/output
-$npm/diff-files -m "Test correct command sequence for using app-armor from command-line" $srcdir/output $srcdir/reference
+$npm/diff-files -m "Dry test of command line interface should work" $srcdir/output $srcdir/reference

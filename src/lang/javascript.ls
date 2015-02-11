@@ -1,30 +1,33 @@
-_               = require('lodash')
-moment          = require 'moment'
-fs              = require 'fs'
-$               = require 'bluebird'
-__              = require 'shelljs'
-
 debug = require('debug')('javascript')
 
-exec = $.promisify(__.exec)
+{ required } = require('../das')
+
+{ run } = require '../codejail'
 
 _module = ->
 
-    grade = (response, payload) -> 
+    sanitize = (response, payload) ->
+        if not response?
+            throw "Sorry, you should specify a response"
         payload.context ?= ""
-        payload.valudation ?= ""
+        payload.valudation ?= ""        
+
+    grade = (response, payload) -> 
+        sanitize(response, payload)
         program = """
             #{payload.context}
             #{response}
             #{payload.validation}
         """
-        try 
-            debug(program)
-            result = program
-        catch 
-            return { -correct, score: 0, msg: "noo! try again." }
-
-        return { +correct, score: 1, msg: "ok!" }
+        return run('mnode', program)
+        .then ->
+            { success, result } = it
+            if not success 
+                { -correct, score: 0, msg: "no! output: #result", program: program }
+            else
+                { +correct, score: 1, msg: "ok! output: #result", program: program }
+        
+            
           
     iface = { 
         grade: grade

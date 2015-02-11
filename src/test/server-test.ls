@@ -23,8 +23,18 @@ packet = (student-id, response, payload) ->
                                 b64.encode $ -> payload
 
 
+configure-server-dependencies = ->
+    { configure } = require('./das')
+    configure({
+            'fs': 'fs' 
+            'shelljs': 'shelljs'
+            'os': 'os'
+            'uid': 'uid'
+    })   
 
-test-payload = {
+configure-server-dependencies!
+
+fake-test-payload = {
     lang: 'fakelang'
     base: "original-text"
     solution: "original-solution"
@@ -32,7 +42,7 @@ test-payload = {
     context: null
 }
 
-test-payload-fail = {
+fake-test-payload-fail = {
     lang: 'fakelang'
     base: "original-text"
     solution: "original-solution"
@@ -40,7 +50,11 @@ test-payload-fail = {
     context: null
 }
 
-describe 'Initialization', (empty) ->
+rq = -> request.post('/').send(it).set('Accept', 'application/json').expect('Content-Type', /json/).expect(200).end!
+
+rqfail = -> request.post('/').send(it).set('Accept', 'application/json').expect('Content-Type', /json/).expect(406).end!
+
+describe 'Basic request/response protocol', (empty) ->
     it 'should return 404 when method is not post', ->*
         res = yield request.get('/').expect(404).end()
         expect(res.text).to.equal('sorry, only POST methods allowed')
@@ -48,16 +62,52 @@ describe 'Initialization', (empty) ->
     it 'should return an error when the request is not compliant with specs', ->*
         res = yield request.post('/').send({+foo}).expect(406).end()
 
-    it 'should return a success when request is compliant', ->* 
-        res = yield request.post '/'
-        .send(packet(333, 'var x = 1;', test-payload))
-        .expect(200).end()
-        val = JSON.parse(res.text)
-        expect(val.correct).to.equal(true)
+describe 'Compliant requests', (empty) ->
+    it 'should succeed when fake program works', ->* 
+        res = yield rq(packet(333, 'var x = 1;', fake-test-payload))
+        expect(res.body.correct).to.equal(true)
 
-    it 'should return a fail when program fails', ->* 
-        res = yield request.post '/'
-        .send(packet(333, 'var x = 1;', test-payload-fail))
-        .expect(200).end()
-        val = JSON.parse(res.text)
-        expect(val.msg).to.equal("noo! it failed")
+    it 'should fail when fake program bombs', ->* 
+        res = yield rq(packet(333, 'var x = 1;', fake-test-payload-fail))
+        expect(res.body.correct).to.equal(false)
+        expect(res.body.msg).to.equal("noo! it failed")
+
+    it 'should not run a program without a language id', ->*
+        res = yield rqfail(packet(333, 'var x=1; console.log(x);', { validation: "" }))
+
+
+describe 'Javascript execution', (empty) ->
+    it 'should run a javascript program', ->* 
+        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "" }))        
+        expect(res.body.msg).to.equal("ok! output: 1\n")
+        expect(res.body.correct).to.equal(true)
+
+    it 'should run a javascript program, with no validation', ->* 
+        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript' }))  
+        expect(res.body.msg).to.equal("ok! output: 1\n")
+        expect(res.body.correct).to.equal(true)
+
+    it 'should run a javascript program, with validation', ->* 
+        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "return 0;" }))  
+        expect(res.body.msg).to.equal("ok! output: 1\n")
+        expect(res.body.correct).to.equal(true)
+
+    it 'should run a javascript program, with validation', ->* 
+        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "process.exit(0);" }))  
+        expect(res.body.msg).to.equal("ok! output: 1\n")
+        expect(res.body.correct).to.equal(true)
+
+    it 'should run a javascript program, with validation', ->* 
+        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "process.exit(2);" }))  
+        expect(res.body.msg).to.equal("no! output: Error: 2") # discards output and displays error code.
+        expect(res.body.correct).to.equal(false)
+
+    it 'should run a javascript program, with validation', ->* 
+        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "require('assert')(x==1); process.exit(0);" }))  
+        expect(res.body.msg).to.equal("ok! output: 1\n")
+        expect(res.body.correct).to.equal(true)
+
+    it 'should run a javascript program, with validation', ->* 
+        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "require('assert')(x==2); process.exit(0);" }))  
+        expect(res.body.correct).to.equal(false)
+

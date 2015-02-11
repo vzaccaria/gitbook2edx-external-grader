@@ -1,15 +1,21 @@
 "use strict"
 
-_module = (_, debug) ->
+debug = require('debug')('grader')
 
-    debug = debug('grader')
+_module = ->
+
+    debug "Started"
 
     grade = (response, payload) ->*
+        debug "Response: "
+        debug response 
+        debug "Payload"
+        debug payload
         if payload.lang?
                 grader-api = require "./lang/#{payload.lang}"
                 return grader-api.grade(response, payload)
         else
-            throw "Sorry, #{payload.lang} is invalid"
+            throw "Sorry, you must specify a language"
           
     iface = { 
         grade: grade
@@ -17,8 +23,5 @@ _module = (_, debug) ->
   
     return iface
 
-module.exports = _module(
-    require("lodash"),
-    require("debug")
-    )
+module.exports = _module!
 

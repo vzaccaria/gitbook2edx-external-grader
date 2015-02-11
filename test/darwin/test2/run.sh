@@ -11,4 +11,4 @@ bindir=$srcdir/../../..
 npm=$bindir/node_modules/.bin
 
 $bindir/index.js run 'console.log("ciao")' > $srcdir/output
-$npm/diff-files -m "Test correct command sequence for running code on the cli" $srcdir/output $srcdir/reference
+$npm/diff-files -m "Wet test of command line code execution should work (node)" $srcdir/output $srcdir/reference

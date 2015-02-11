@@ -135,7 +135,7 @@ cmd-20:
 
 .PHONY : cmd-21
 cmd-21: 
-	./node_modules/.bin/mocha -C --harmony ./lib/server-test.js
+	./node_modules/.bin/mocha -C --harmony ./lib/server-test.js -R spec
 
 .PHONY : cmd-seq-22
 cmd-seq-22: 

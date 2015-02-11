@@ -45,7 +45,7 @@ parse ->
         @command-seq -> [
             @make 'all'
             @cmd "./test/test.sh"
-            @cmd "./node_modules/.bin/mocha -C --harmony ./lib/server-test.js"
+            @cmd "./node_modules/.bin/mocha -C --harmony ./lib/server-test.js -R spec"
             ]
     ]
 
