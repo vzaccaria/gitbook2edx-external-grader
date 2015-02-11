@@ -14,7 +14,23 @@
 
 ## Running
 
-The makefile has two targets (`start` and `stop`) to make you run the grader in server mode and expose it to the internet. These targets use `pm2` to start and stop both the grader and an `ngrok` server. The ngrok server should be configured with an `.ngrok` file; this is my `~/.ngrok` file:
+You can run the external grader in two configurations:
+
+1. As a server 
+2. As a command line tool to run jailed programs
+
+### Running as a server
+
+Simply invoking on the command line with `serve` starts the server listening on the specified port (default: 1666). At the moment, the grader has an app-armor profile for the following languages:
+
+* Javascript (through NodeJS)
+
+### Adding your own script engine 
+
+TBD
+
+#### Managing the server
+To easily manage the server (optional), there are two npm scripts (`start` and `stop`) to make you run the grader in server mode and expose it to the internet. These scripts use `pm2` to start and stop both the grader and an `ngrok` server. The ngrok server should be configured with an `.ngrok` file; this is my `~/.ngrok` file:
 
 ```
 auth_token: your auth token
@@ -27,13 +43,14 @@ tunnels:
 
 After `ngrok` started, the server is reachable in this case at: `http://grader.cms.zaccaria.ngrok.com`. This is the address to use for the Edx push `xqueue`.
 
+# Development
+
 ## Tests
 
-Tests are categorized in three parts:
+Tests are categorized in two parts:
 
-1. Tests for the server part (via `supertest`); these dont really require app-armor. They just check that data the overall client-server protocol complies with `xqueue` specs (invoked with `make test`).
-2. Fake tests for the code-jail environment; these test the sequencing of actions that should be done when launching an application through app-armor, even if you dont have app-armor (e.g., I am developing on a Mac). These are invoked by `./test/test.sh`.
-3. App-armor execution; these run some sample scripts under app-armor, by assuming you are under linux 14.04. These are invoked by `./test-local/test.sh`
+1. Integration tests for the server part (via `supertest`); 
+2. Command line execution: these test the sequencing of actions that should be done when launching an application through a confinement system (if it is available for your platform).
 
 ## Author
 {%= include("author") %}

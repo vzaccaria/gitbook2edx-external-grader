@@ -7,7 +7,10 @@
   },
   "scripts": {
     "test": "make test",
-    "test-local": "./test-local/test.sh"
+    "test-local": "./test-local/test.sh",
+    "start": "make start",
+    "stop": "make stop",
+    "monit": "make monit"
   },
   "keywords": [],
   "author": "Vittorio Zaccaria",
