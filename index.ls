@@ -19,7 +19,7 @@ get-options = ->
 
     port   = get-option('-p', '--port', 1666, o)
     code   = o['CODE']
-    engine = get-option('-e', '--engine', 'node', o)
+    engine = get-option('-e', '--engine', 'javascript', o)
     dry    = get-option('-d', '--dry', false, o)
 
     if o['run'] 

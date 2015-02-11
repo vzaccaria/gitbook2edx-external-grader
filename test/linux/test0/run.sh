@@ -10,6 +10,6 @@ dstdir=`pwd`
 bindir=$srcdir/../../..
 npm=$bindir/node_modules/.bin
 
-($bindir/index.js run -e 'mnode' 'console.log("hi!")') > $srcdir/output
+($bindir/index.js run -e 'javascript' 'console.log("hi!")') > $srcdir/output
 $npm/diff-files -m "Wet test of command line code execution should execute safe code (node+apparmor)" $srcdir/output $srcdir/reference
 

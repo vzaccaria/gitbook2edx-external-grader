@@ -20,7 +20,7 @@
     o = docopt(doc);
     port = getOption('-p', '--port', 1666, o);
     code = o['CODE'];
-    engine = getOption('-e', '--engine', 'node', o);
+    engine = getOption('-e', '--engine', 'javascript', o);
     dry = getOption('-d', '--dry', false, o);
     if (o['run']) {
       return {

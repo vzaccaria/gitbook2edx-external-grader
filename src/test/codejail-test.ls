@@ -28,9 +28,9 @@ build-mocks = ->
     })
 
 run-tests = ->
-    { jail_code, run, configure-all } = require('./codejail')
-    jail_code("node", "x+1", "p1", { f1: "f1", f2: "f2" }, "", "x1")
-    .then -> run("mnode", "x+y+z")
+    { jail_code, run } = require('./codejail')
+    jail_code("fake", "x+1", "p1", { f1: "f1", f2: "f2" }, "", "x1")
+    .then -> run("fake", "x+y+z")
     .then (-> console.log it), (-> console.log it)
 
 main = ->

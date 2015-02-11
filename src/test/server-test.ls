@@ -35,7 +35,7 @@ configure-server-dependencies = ->
 configure-server-dependencies!
 
 fake-test-payload = {
-    lang: 'fakelang'
+    lang: 'fake'
     base: "original-text"
     solution: "original-solution"
     validation: "assert(x==1);"
@@ -43,7 +43,7 @@ fake-test-payload = {
 }
 
 fake-test-payload-fail = {
-    lang: 'fakelang'
+    lang: 'fake'
     base: "original-text"
     solution: "original-solution"
     validation: "bombit"
@@ -66,11 +66,6 @@ describe 'Compliant requests', (empty) ->
     it 'should succeed when fake program works', ->* 
         res = yield rq(packet(333, 'var x = 1;', fake-test-payload))
         expect(res.body.correct).to.equal(true)
-
-    it 'should fail when fake program bombs', ->* 
-        res = yield rq(packet(333, 'var x = 1;', fake-test-payload-fail))
-        expect(res.body.correct).to.equal(false)
-        expect(res.body.msg).to.equal("noo! it failed")
 
     it 'should not run a program without a language id', ->*
         res = yield rqfail(packet(333, 'var x=1; console.log(x);', { validation: "" }))

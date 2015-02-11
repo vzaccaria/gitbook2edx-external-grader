@@ -5,9 +5,8 @@ _module = ->
           
     iface = { 
 
-        'node': 
+        'javascript': 
                 path: "/usr/local/bin/node"
-                user: "node-sandbox"
                 aa: -> """
                     \#include <tunables/global>
 
@@ -17,18 +16,10 @@ _module = ->
                         #it mr,
                     }
                     """
-
-        'mnode': 
-                path: "/usr/local/bin/node"
+        'fake': 
+                path: "/bin/cat"
                 aa: -> """
-                    \#include <tunables/global>
-                    #it {
-                        \#include <abstractions/base>
-                        /usr/local/bin/node mr,
-                        #it mr,
-                    }
-                    """
-
+                       """
 
         'octave': 
                 path: "path/to/octave"
