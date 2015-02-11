@@ -75,39 +75,29 @@ describe 'Compliant requests', (empty) ->
     it 'should not run a program without a language id', ->*
         res = yield rqfail(packet(333, 'var x=1; console.log(x);', { validation: "" }))
 
+o = (program, validation, correct, msg, desc) ->
+        actions = ->*
+            res = yield rq(packet(333, program, { lang: 'javascript', validation: validation }))
+            expect(res.body.msg).to.equal(msg)
+            expect(res.body.correct).to.equal(correct)
+        if correct
+            return { desc: "when: #desc -> it should work", actions }
+        else
+            return { desc: "when: #desc -> it should not work", actions }
+
+js-tests = [
+    o 'var x=1; console.log(x);' , ''                                         , true  , "ok! output: 1\n"      , 'working program , empty validation'
+    o 'var x=1; console.log(x);' , undefined                                  , true  , "ok! output: 1\n"      , 'working program , undefined validation'
+    o 'var x=1; console.log(x);' , 'return 0'                                 , true  , "ok! output: 1\n"      , 'working program , safe validation'
+    o 'var x=1; console.log(x);' , 'process.exit(0)'                          , true  , "ok! output: 1\n"      , 'working program , safe validation'
+    o 'var x=1; console.log(x);' , 'process.exit(2)'                          , false , "no! output: Error: 2" , 'working program , returns error'
+    o 'var x=1; console.log(x);' , "require('assert')(x==1); process.exit(0)" , true  , "ok! output: 1\n"      , 'working program , validation succ'
+    o 'var x=1; console.log(x);' , "require('assert')(x==2); process.exit(0)" , false , "no! output: Error: 1" , 'working program , validation fails'
+    ]
 
 describe 'Javascript execution', (empty) ->
-    it 'should run a javascript program', ->* 
-        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "" }))        
-        expect(res.body.msg).to.equal("ok! output: 1\n")
-        expect(res.body.correct).to.equal(true)
+    for t in js-tests
+        it t.desc, t.actions
 
-    it 'should run a javascript program, with no validation', ->* 
-        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript' }))  
-        expect(res.body.msg).to.equal("ok! output: 1\n")
-        expect(res.body.correct).to.equal(true)
 
-    it 'should run a javascript program, with validation', ->* 
-        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "return 0;" }))  
-        expect(res.body.msg).to.equal("ok! output: 1\n")
-        expect(res.body.correct).to.equal(true)
-
-    it 'should run a javascript program, with validation', ->* 
-        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "process.exit(0);" }))  
-        expect(res.body.msg).to.equal("ok! output: 1\n")
-        expect(res.body.correct).to.equal(true)
-
-    it 'should run a javascript program, with validation', ->* 
-        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "process.exit(2);" }))  
-        expect(res.body.msg).to.equal("no! output: Error: 2") # discards output and displays error code.
-        expect(res.body.correct).to.equal(false)
-
-    it 'should run a javascript program, with validation', ->* 
-        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "require('assert')(x==1); process.exit(0);" }))  
-        expect(res.body.msg).to.equal("ok! output: 1\n")
-        expect(res.body.correct).to.equal(true)
-
-    it 'should run a javascript program, with validation', ->* 
-        res = yield rq(packet(333, 'var x=1; console.log(x);', { lang: 'javascript', validation: "require('assert')(x==2); process.exit(0);" }))  
-        expect(res.body.correct).to.equal(false)
 
