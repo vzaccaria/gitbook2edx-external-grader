@@ -43,6 +43,7 @@ parse ->
 
     @collect "test", -> [
         @command-seq -> [
+            @make 'clean'
             @make 'all'
             @cmd "./test/test.sh"
             @cmd "./node_modules/.bin/mocha -C --harmony ./lib/server-test.js -R spec"

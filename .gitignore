@@ -5,3 +5,4 @@ test-local/test0/output
 test-local/test1/output
 node_modules
 test/darwin/test2/output
+pipp.sh

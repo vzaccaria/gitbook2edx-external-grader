@@ -113,94 +113,99 @@ clean: clean-13 clean-14 clean-15 cmd-16
 
 .PHONY : cmd-17
 cmd-17: 
-	make all
+	make clean
 
 .PHONY : cmd-18
 cmd-18: 
-	./test/test.sh
+	make all
 
 .PHONY : cmd-19
 cmd-19: 
+	./test/test.sh
+
+.PHONY : cmd-20
+cmd-20: 
 	./node_modules/.bin/mocha -C --harmony ./lib/server-test.js -R spec
 
-.PHONY : cmd-seq-20
-cmd-seq-20: 
+.PHONY : cmd-seq-21
+cmd-seq-21: 
 	make cmd-17
 	make cmd-18
 	make cmd-19
+	make cmd-20
 
 .PHONY : test
-test: cmd-seq-20
-
-.PHONY : cmd-21
-cmd-21: 
-	./node_modules/.bin/xyz --increment major
-
-.PHONY : release-major
-release-major: cmd-21
+test: cmd-seq-21
 
 .PHONY : cmd-22
 cmd-22: 
-	./node_modules/.bin/xyz --increment minor
+	./node_modules/.bin/xyz --increment major
 
-.PHONY : release-minor
-release-minor: cmd-22
+.PHONY : release-major
+release-major: cmd-22
 
 .PHONY : cmd-23
 cmd-23: 
-	./node_modules/.bin/xyz --increment patch
+	./node_modules/.bin/xyz --increment minor
 
-.PHONY : release-patch
-release-patch: cmd-23
+.PHONY : release-minor
+release-minor: cmd-23
 
 .PHONY : cmd-24
 cmd-24: 
-	make all
+	./node_modules/.bin/xyz --increment patch
+
+.PHONY : release-patch
+release-patch: cmd-24
 
 .PHONY : cmd-25
 cmd-25: 
-	./node_modules/.bin/pm2 start ./grader.json
+	make all
 
 .PHONY : cmd-26
 cmd-26: 
-	./node_modules/.bin/pm2 start /usr/local/bin/ngrok --interpreter none -x -- start grader
+	./node_modules/.bin/pm2 start ./grader.json
 
 .PHONY : cmd-27
 cmd-27: 
-	./node_modules/.bin/pm2 logs grader
+	./node_modules/.bin/pm2 start /usr/local/bin/ngrok --interpreter none -x -- start grader
 
 .PHONY : cmd-28
 cmd-28: 
+	./node_modules/.bin/pm2 logs grader
+
+.PHONY : cmd-29
+cmd-29: 
 	echo 'Connect to http://localhost:4040 to watch for incoming traffic
 
-.PHONY : cmd-seq-29
-cmd-seq-29: 
-	make cmd-24
+.PHONY : cmd-seq-30
+cmd-seq-30: 
 	make cmd-25
 	make cmd-26
 	make cmd-27
 	make cmd-28
+	make cmd-29
 
 .PHONY : start
-start: cmd-seq-29
-
-.PHONY : cmd-30
-cmd-30: 
-	./node_modules/.bin/pm2 delete all
-
-.PHONY : stop
-stop: cmd-30
+start: cmd-seq-30
 
 .PHONY : cmd-31
 cmd-31: 
-	./node_modules/.bin/pm2 monit
+	./node_modules/.bin/pm2 delete all
 
-.PHONY : monit
-monit: cmd-31
+.PHONY : stop
+stop: cmd-31
 
 .PHONY : cmd-32
 cmd-32: 
+	./node_modules/.bin/pm2 monit
+
+.PHONY : monit
+monit: cmd-32
+
+.PHONY : cmd-33
+cmd-33: 
 	./node_modules/.bin/pm2 status
 
 .PHONY : s
-s: cmd-32
+s: cmd-33
