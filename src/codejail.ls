@@ -4,7 +4,7 @@
 
 _module = (_, moment, fs, $, __, co, debug, uid, os) ->
     ->
-        cmd        = -> $.promisify(__.exec)(it, {+async})
+        cmd        = -> $.promisify(__.exec)(it, {+async, +silent})
         writeAsync = $.promisify(fs.writeFile)
         commands   = {}
         temp-dir   = os.tmpdir()
@@ -40,7 +40,16 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
                 yield _.mapValues files, (content, name) ->
                     writeAsync("#sandbox-dir/#name", content, 'utf-8')
 
-                yield deploy-profile("#sandbox-dir/profile.aa", commands[engine].profile("#sandbox-dir/jailed.code"))
+                config-options = {
+                    program-name: "#sandbox-dir/jailed.code"
+                    folder-name: "#sandbox-dir"
+                    }
+
+                profile-content = commands[engine].profile("#sandbox-dir/jailed.code", config-options)
+
+                debug profile-content
+                
+                yield deploy-profile("#sandbox-dir/profile.aa", profile-content)
 
                 code := "\#!#{commands[engine].cmdline_start}\n" + code
 

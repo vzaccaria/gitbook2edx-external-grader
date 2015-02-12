@@ -19,14 +19,17 @@ _module = ->
                     """
 
         'octave': 
-                path: "/Users/zaccaria/development/github/gitbook2edx-octave-helper/bin/octave-helper"
-                aa: -> """
+                path: "#{__dirname}/../helpers/gitbook2edx-octave-helper/bin/octave-helper"
+                aa: (it, c) -> """
                     \#include <tunables/global>
 
                     #it {
                         \#include <abstractions/base>
+                        #{__dirname}/../helpers/gitbook2edx-octave-helper/bin/octave-helper ix,
                         /usr/local/bin/octave mr,
                         /usr/bin/octave mr,
+                        /bin/dash,
+                        #{c.folder-name},
                         #it mr,
                     }
                     """

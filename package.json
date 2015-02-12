@@ -10,7 +10,8 @@
     "test-local": "./test-local/test.sh",
     "start": "make start",
     "stop": "make stop",
-    "monit": "make monit"
+    "monit": "make monit",
+    "post-install": "cd helpers/gitbook2edx-octave-helper && ./makefile.ls -- -t all"
   },
   "keywords": [],
   "author": "Vittorio Zaccaria",

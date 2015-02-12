@@ -112,11 +112,11 @@ describe 'Octave execution', (empty) ->
             return { desc: "when: #desc -> it should not work", actions }
 
     octave-tests = [
-        o 'x=1+1'    , ''                      , true  , "ok! output: x =  2\n\n"         , 'working program , empty validation     '
-        o 'x=sin(1)' , 'exit(0);\n'            , true  , "ok! output: x =  0.84147\n\n\n" , 'working program , safe validation      '
-        o 'x=1;'     , 'exit(2);\n'            , false , "no! output: Error: 1"           , 'working program , returns error        '
-        o 'x=1'      , "assert(x==1)\nexit(0)" , true  , "ok! output: x =  1\n\n\n"       , 'working program , validation succ      '
-        o 'x=1'      , "assert(x==2)\nexit(0)" , false , "no! output: Error: 1"           , 'working program , validation fails     '
+        o 'x=1+1'    , ''                      , true  , "ok! output: x =  2\n\n"         , 'working program, empty validation     '
+        o 'x=sin(1)' , 'exit(0);\n'            , true  , "ok! output: x =  0.84147\n\n\n" , 'working program, safe validation      '
+        o 'x=1;'     , 'exit(2);\n'            , false , "no! output: Error: 1"           , 'working program, returns error        '
+        o 'x=1'      , "assert(x==1)\nexit(0)" , true  , "ok! output: x =  1\n\n\n"       , 'working program, validation succ      '
+        o 'x=1'      , "assert(x==2)\nexit(0)" , false , "no! output: Error: 1"           , 'working program, validation fails     '
         ]
 
     for t in octave-tests 
