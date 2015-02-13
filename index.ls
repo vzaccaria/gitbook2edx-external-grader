@@ -3,6 +3,7 @@ require! 'fs'
 
 shelljs = require('shelljs')
 server  = require('./lib/server')
+config  = require('./lib/config')
 
 exec = require('bluebird').promisify(shelljs.exec)
 
@@ -23,9 +24,9 @@ get-options = ->
     dry    = get-option('-d', '--dry', false, o)
 
     if o['run'] 
-        return { serve: false, run: true, code: code, engine: engine, dry: dry }
+        return { serve: false, run: true, code: code, engine: engine, dry: dry, +verbose }
     else
-        return { serve: true, run: false, port: port }
+        return { serve: true, run: false, port: port , -verbose}
 
 configure-server-dependencies = ->
     { configure } = require('./lib/das')
@@ -71,6 +72,10 @@ configure-cli-dependencies = (is-it-dry) ->
         })        
 
 main = ->
+    # Main program configuration
+    config.set(get-options!)
+
+    # Parse commands
     { serve, run } = get-options!
     if serve 
         { port } = get-options!

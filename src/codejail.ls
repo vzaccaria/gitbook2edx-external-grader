@@ -2,11 +2,13 @@
 
 { required } = require('./das')
 
+config = require('./config')
+
 _module = (_, moment, fs, $, __, co, debug, uid, os) ->
     ->
-        cmd        = -> $.promisify(__.exec)(it, {+async, +silent})
+        cmd        = -> 
+            $.promisify(__.exec)(it, {+async, silent: (not config.get!.verbose) })
         writeAsync = $.promisify(fs.writeFile)
-        commands   = {}
         temp-dir   = os.tmpdir()
 
         { deploy-profile, run-profile, remove-profile } = require './armor'
@@ -20,53 +22,61 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
         setLimits = ->
             default_limits := _.assign(default_limits, it)
 
-        configure = (command, binary_path, profile, user) ->
-
-            commands[command] = {
-                cmdline_start: "#binary_path"
-                user: user
-                profile: profile
-                }
-
         jail_code = (engine, code, argv, files, stdin) ->
             co ->* 
+                profile = require('./profiles')[engine]
+
+                if not profile?
+                    throw "Sorry, non existing profile"
+
                 command     = ""
                 sandbox-dir = "#temp-dir/#{uid(8)}"
 
                 yield cmd("mkdir -p #sandbox-dir")
-
-                command     = command + "SANDBOXDIR=#sandbox-dir "
-
-                yield _.mapValues files, (content, name) ->
-                    writeAsync("#sandbox-dir/#name", content, 'utf-8')
 
                 config-options = {
                     program-name: "#sandbox-dir/jailed.code"
                     folder-name: "#sandbox-dir"
                     }
 
-                profile-content = commands[engine].profile("#sandbox-dir/jailed.code", config-options)
+                command     = command + "SANDBOXDIR=#sandbox-dir "
 
-                debug profile-content
+                debug profile
                 
-                yield deploy-profile("#sandbox-dir/profile.aa", profile-content)
+                if profile.env?
+                    command = command + " #{profile.env(config-options)} "
 
-                code := "\#!#{commands[engine].cmdline_start}\n" + code
+
+                yield _.mapValues files, (content, name) ->
+                    writeAsync("#sandbox-dir/#name", content, 'utf-8')
+
+                debug "Writing profile"
+                aa-profile-content = profile.aa("#sandbox-dir/jailed.code", config-options)
+
+                debug aa-profile-content
+                
+                yield deploy-profile("#sandbox-dir/profile.aa", aa-profile-content)
+
+                code := "\#!#{profile.path}\n" + code
 
                 yield writeAsync("#sandbox-dir/jailed.code", code, 'utf-8')
                 yield cmd("chmod +x #sandbox-dir/jailed.code")
 		
 
-                user = commands[engine].user
+                user = profile.user
                 command = command + run-profile(user, "#sandbox-dir/profile.aa", "#sandbox-dir/jailed.code")
+
+                debug command 
 
                 var result
                 var success
                 try
                     result := yield cmd(command)
+                    debug result
                     success := true
                 catch 
                     result := e 
+                    debug result
                     success := false 
 
                 yield remove-profile "#sandbox-dir/profile.aa"
@@ -74,15 +84,8 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
                 return { success, result }
             .catch ->
                 return { -success, result: 'internal error' }	
-		
-
-        configure-all = ->
-            profiles = require('./profiles')
-            for name, value of profiles
-                configure(name, value.path, value.aa, value.user)
 
         simply-run = (engine, code) ->
-            configure-all('run-sandbox')
             profiles = require('./profiles')
 
             if not profiles[engine]?
@@ -90,7 +93,7 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
 
             return jail_code(engine, code, "", {},  "")
                  
-        configure-all!
+        # configure-all!
 
         iface = { 
             jail_code: jail_code
