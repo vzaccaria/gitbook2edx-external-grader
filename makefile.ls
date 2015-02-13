@@ -32,6 +32,8 @@ parse ->
                     @lsc ("./index.ls")
             ]
 
+            @cmd "cd ./helpers/gitbook2edx-octave-helper && make"
+
             @cmd "chmod +x ./index.js"
 
         ]
@@ -44,7 +46,7 @@ parse ->
     @collect "test", -> [
         @command-seq -> [
             @make 'clean'
-            @make 'all'
+            @make '-j all'
             @cmd "./test/test.sh"
             @cmd "./node_modules/.bin/mocha -C --harmony ./lib/server-test.js -R spec"
             ]

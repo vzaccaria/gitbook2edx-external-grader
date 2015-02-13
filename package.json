@@ -11,7 +11,7 @@
     "start": "make start",
     "stop": "make stop",
     "monit": "make monit",
-    "post-install": "cd helpers/gitbook2edx-octave-helper && ./makefile.ls -- -t all"
+    "post-install": "cd helpers/gitbook2edx-octave-helper && ./makefile.ls && make clean && make all"
   },
   "keywords": [],
   "author": "Vittorio Zaccaria",

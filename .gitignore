@@ -6,3 +6,7 @@ test-local/test1/output
 node_modules
 test/darwin/test2/output
 pipp.sh
+src/codejail.ls.new
+src/profiles.ls.new
+helpers/gitbook2edx-octave-helper/fix/.octave_hist
+src/._config.ls
