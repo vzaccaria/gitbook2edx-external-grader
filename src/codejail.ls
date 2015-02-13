@@ -19,17 +19,7 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
             fsize:    0 # number of files that can be created
         }
 
-        setLimits = ->
-            default_limits := _.assign(default_limits, it)
-
-        jail_code = (engine, code, argv, files, stdin) ->
-            co ->* 
-                profile = require('./profiles')[engine]
-
-                if not profile?
-                    throw "Sorry, non existing profile"
-
-                command     = ""
+        build-sandbox = (files) ->*
                 sandbox-dir = "#temp-dir/#{uid(8)}"
 
                 yield cmd("mkdir -p #sandbox-dir")
@@ -37,37 +27,33 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
                 config-options = {
                     program-name: "#sandbox-dir/jailed.code"
                     folder-name: "#sandbox-dir"
-                    }
-
-                command     = command + "SANDBOXDIR=#sandbox-dir "
-
-                debug profile
-                
-                if profile.env?
-                    command = command + " #{profile.env(config-options)} "
-
+                }
 
                 yield _.mapValues files, (content, name) ->
                     writeAsync("#sandbox-dir/#name", content, 'utf-8')
 
+                return { sandbox-dir, config-options }
+
+        write-aa-profile = (profile, sandbox-dir, config-options) ->*
                 debug "Writing profile"
                 aa-profile-content = profile.aa("#sandbox-dir/jailed.code", config-options)
-
                 debug aa-profile-content
-                
                 yield deploy-profile("#sandbox-dir/profile.aa", aa-profile-content)
 
-                code := "\#!#{profile.path}\n" + code
 
+        write-script = (profile, sandbox-dir, code) ->*
+                code := "\#!#{profile.path}\n" + code
                 yield writeAsync("#sandbox-dir/jailed.code", code, 'utf-8')
                 yield cmd("chmod +x #sandbox-dir/jailed.code")
-		
 
-                user = profile.user
-                command = command + run-profile(user, "#sandbox-dir/profile.aa", "#sandbox-dir/jailed.code")
-
+        build-run-command = (profile, sandbox-dir, config-options) ->* 
+                command = "SANDBOXDIR=#sandbox-dir "
+                command = command + " #{profile.env(config-options)} " if profile.env?
+                command = command + run-profile(profile.user, "#sandbox-dir/profile.aa", "#sandbox-dir/jailed.code")
                 debug command 
+                return command
 
+        run-script = (command) ->*
                 var result
                 var success
                 try
@@ -78,6 +64,23 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
                     result := e 
                     debug result
                     success := false 
+                return { success, result }
+
+        setLimits = ->
+            default_limits := _.assign(default_limits, it)
+
+        jail_code = (engine, code, argv, files, stdin) ->
+            co ->* 
+                profile = require('./profiles')[engine]
+                throw "Sorry, non existing profile" if not profile?
+
+                { sandbox-dir, config-options } = yield build-sandbox(files)
+
+                yield write-aa-profile(profile, sandbox-dir, config-options)
+                yield write-script(profile, sandbox-dir, code)
+
+                command             = yield build-run-command(profile, sandbox-dir, config-options)
+                { success, result } = yield run-script(command)
 
                 yield remove-profile "#sandbox-dir/profile.aa"
                 yield cmd("rm -rf #sandbox-dir")    
