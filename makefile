@@ -89,7 +89,7 @@ compile: lib/armor.js lib/codejail.js lib/config.js lib/das.js lib/grader.js lib
 
 .PHONY : cmd-12
 cmd-12: 
-	cd ./helpers/gitbook2edx-octave-helper && make
+	make helpers
 
 .PHONY : cmd-13
 cmd-13: 
@@ -125,99 +125,106 @@ clean: clean-15 clean-16 clean-17 cmd-18
 
 .PHONY : cmd-19
 cmd-19: 
-	make clean
+	cd helpers/gitbook2edx-octave-helper && ./makefile.ls && make
+
+.PHONY : helpers
+helpers: cmd-19
 
 .PHONY : cmd-20
 cmd-20: 
-	make -j all
+	make clean
 
 .PHONY : cmd-21
 cmd-21: 
-	./test/test.sh
+	make -j all
 
 .PHONY : cmd-22
 cmd-22: 
+	./test/test.sh
+
+.PHONY : cmd-23
+cmd-23: 
 	./node_modules/.bin/mocha -C --harmony ./lib/server-test.js -R spec
 
-.PHONY : cmd-seq-23
-cmd-seq-23: 
-	make cmd-19
+.PHONY : cmd-seq-24
+cmd-seq-24: 
 	make cmd-20
 	make cmd-21
 	make cmd-22
+	make cmd-23
 
 .PHONY : test
-test: cmd-seq-23
-
-.PHONY : cmd-24
-cmd-24: 
-	./node_modules/.bin/xyz --increment major
-
-.PHONY : release-major
-release-major: cmd-24
+test: cmd-seq-24
 
 .PHONY : cmd-25
 cmd-25: 
-	./node_modules/.bin/xyz --increment minor
+	./node_modules/.bin/xyz --increment major
 
-.PHONY : release-minor
-release-minor: cmd-25
+.PHONY : release-major
+release-major: cmd-25
 
 .PHONY : cmd-26
 cmd-26: 
-	./node_modules/.bin/xyz --increment patch
+	./node_modules/.bin/xyz --increment minor
 
-.PHONY : release-patch
-release-patch: cmd-26
+.PHONY : release-minor
+release-minor: cmd-26
 
 .PHONY : cmd-27
 cmd-27: 
-	make all
+	./node_modules/.bin/xyz --increment patch
+
+.PHONY : release-patch
+release-patch: cmd-27
 
 .PHONY : cmd-28
 cmd-28: 
-	./node_modules/.bin/pm2 start ./grader.json
+	make all
 
 .PHONY : cmd-29
 cmd-29: 
-	./node_modules/.bin/pm2 start /usr/local/bin/ngrok --interpreter none -x -- start grader
+	./node_modules/.bin/pm2 start ./grader.json
 
 .PHONY : cmd-30
 cmd-30: 
-	./node_modules/.bin/pm2 logs grader
+	./node_modules/.bin/pm2 start /usr/local/bin/ngrok --interpreter none -x -- start grader
 
 .PHONY : cmd-31
 cmd-31: 
+	./node_modules/.bin/pm2 logs grader
+
+.PHONY : cmd-32
+cmd-32: 
 	echo 'Connect to http://localhost:4040 to watch for incoming traffic
 
-.PHONY : cmd-seq-32
-cmd-seq-32: 
-	make cmd-27
+.PHONY : cmd-seq-33
+cmd-seq-33: 
 	make cmd-28
 	make cmd-29
 	make cmd-30
 	make cmd-31
+	make cmd-32
 
 .PHONY : start
-start: cmd-seq-32
-
-.PHONY : cmd-33
-cmd-33: 
-	./node_modules/.bin/pm2 delete all
-
-.PHONY : stop
-stop: cmd-33
+start: cmd-seq-33
 
 .PHONY : cmd-34
 cmd-34: 
-	./node_modules/.bin/pm2 monit
+	./node_modules/.bin/pm2 delete all
 
-.PHONY : monit
-monit: cmd-34
+.PHONY : stop
+stop: cmd-34
 
 .PHONY : cmd-35
 cmd-35: 
+	./node_modules/.bin/pm2 monit
+
+.PHONY : monit
+monit: cmd-35
+
+.PHONY : cmd-36
+cmd-36: 
 	./node_modules/.bin/pm2 status
 
 .PHONY : s
-s: cmd-35
+s: cmd-36

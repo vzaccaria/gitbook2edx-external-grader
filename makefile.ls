@@ -31,17 +31,18 @@ parse ->
                 @toDir ".", -> 
                     @lsc ("./index.ls")
             ]
-
-            @cmd "cd ./helpers/gitbook2edx-octave-helper && make"
-
+            @make 'helpers'
             @cmd "chmod +x ./index.js"
-
         ]
 
     @collect "clean", -> [
         @remove-all-targets()
         @cmd "rm -rf ./lib"
     ]
+
+    @collect "helpers", -> [
+        @cmd "cd helpers/gitbook2edx-octave-helper && ./makefile.ls && make"
+        ]
 
     @collect "test", -> [
         @command-seq -> [
