@@ -7,7 +7,9 @@ config = require('./config')
 _module = (_, moment, fs, $, __, co, debug, uid, os) ->
     ->
         cmd        = -> 
-            $.promisify(__.exec)(it, {+async, silent: (not config.get!.verbose) })
+            $.promisify(__.exec)(it, {+async, silent: (not config.get!.verbose) }).then ->
+                debug it
+                it
         writeAsync = $.promisify(fs.writeFile)
         temp-dir   = os.tmpdir()
 
@@ -43,6 +45,7 @@ _module = (_, moment, fs, $, __, co, debug, uid, os) ->
 
         write-script = (profile, sandbox-dir, code) ->*
                 code := "\#!#{profile.path}\n" + code
+                debug code
                 yield writeAsync("#sandbox-dir/jailed.code", code, 'utf-8')
                 yield cmd("chmod +x #sandbox-dir/jailed.code")
 

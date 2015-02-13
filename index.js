@@ -107,6 +107,7 @@
     ref$ = getOptions(), serve = ref$.serve, run = ref$.run;
     if (serve) {
       port = getOptions().port;
+      configureServerDependencies();
       return server.bringup(port);
     } else {
       ref$ = getOptions(), code = ref$.code, engine = ref$.engine, dry = ref$.dry;

@@ -8,6 +8,15 @@ _module = ->
 
         'javascript': 
                 path: "/usr/local/bin/node"
+                code: (response, payload) -> 
+                    """
+
+                    /* require assert for assertions */
+                    var assert = require('assert');
+                    #{payload.context}
+                    #{response}
+                    #{payload.validation}
+                    """
                 aa: -> """
                     \#include <tunables/global>
 

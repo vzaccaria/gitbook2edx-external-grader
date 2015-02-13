@@ -3,7 +3,7 @@
 debug = require('debug')('grader')
 
 
-_module = ->
+_module = (profiles) ->
 
     debug "Started"
 
@@ -11,15 +11,21 @@ _module = ->
         if not response?
             throw "Sorry, you should specify a response"
         payload.context ?= ""
-        payload.valudation ?= ""   
+        payload.validation ?= ""   
 
     grade = (response, payload) -> 
         sanitize(response, payload)
-        program = """
-            #{payload.context}
-            #{response}
-            #{payload.validation}
-        """
+        var program
+        debug payload
+        if profiles[payload.lang]?.code?
+            program := profiles[payload.lang].code(response, payload)
+        else 
+            program := """
+                #{payload.context}
+                #{response}
+                #{payload.validation}
+            """
+        debug program
         { run } = require('./codejail')
         return run(payload.lang, program)
         .then ->
@@ -35,4 +41,4 @@ _module = ->
   
     return iface
  
-module.exports = _module()
+module.exports = _module(require('./profiles'))

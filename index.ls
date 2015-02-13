@@ -79,6 +79,7 @@ main = ->
     { serve, run } = get-options!
     if serve 
         { port } = get-options!
+        configure-server-dependencies()
         server.bringup(port)
 
     else 
