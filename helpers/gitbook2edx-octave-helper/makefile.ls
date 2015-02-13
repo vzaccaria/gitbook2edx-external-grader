@@ -7,7 +7,7 @@ cppCompiler = "clang++"
 parse ->
 
     @add-plugin 'clangPre',(g, deps) ->
-        @compile-files( (-> "#cppCompiler -c -I./src -std=c++11 -DUSE_STD #{it.orig-complete} -o #{it.build-target}"), ".o", g, deps )
+        @compile-files( (-> "#cppCompiler -c -I./src/cppformat -I./src -std=c++11 -DUSE_STD #{it.orig-complete} -o #{it.build-target}"), ".o", g, deps )
 
     @add-plugin 'link', (files) ->
         @reduce-files( ("#cppCompiler $^  -o $@"), "linked", "x", files)
@@ -17,13 +17,14 @@ parse ->
         @dest "./bin/octave-helper", ->
             @link -> [
                          @clang-pre 'src/*.cxx', 'src/*.hxx'
+                         @clang-pre 'src/cppformat/format.cc'
                          ]
         ]
         
     @collect "all", ->
         @command-seq -> [
             @make "build"
-            @cmd "./bin/octave-helper ./fix/t.m"
+            @cmd "./bin/octave-helper #{__dirname}/fix/t.m"
             ]
 
     @collect "clean", -> [
