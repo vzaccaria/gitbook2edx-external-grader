@@ -25,11 +25,8 @@ parse ->
                 @toDir "./lib", { strip: "src" }, ->
                     @livescript ("./src/**/*.ls")
 
-                @toDir "./lib", { strip: "src/test" }, ->
-                    @livescript ("./src/test/**/*.ls")
-
-                @toDir "./lib", { strip: "src/test" }, ->
-                        @glob ("./src/test/**/*.js")
+                @toDir "./lib", { strip: "src" }, ->
+                        @glob ("./src/**/*.js")
 
                 @toDir ".", ->
                     @lsc ("./index.ls")
@@ -49,10 +46,10 @@ parse ->
 
     @collect "test", -> [
         @command-seq -> [
-            @make 'clean'
+            #@make 'clean'
             @make '-j all'
-            @cmd "./test/test.sh"
-            @cmd "./node_modules/.bin/mocha -C --harmony ./lib/server-test.js -R spec"
+            #@cmd "./node_modules/.bin/mocha -C --harmony ./lib/test/server-test.js -R spec"
+            @cmd "./node_modules/.bin/mocha -C ./lib/test/armor-test.js -R spec"
             ]
     ]
 

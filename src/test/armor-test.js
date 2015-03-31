@@ -1,8 +1,12 @@
-var expect = require('chai').expect
-  // var cj = require('./codejail')
+var chai = require('chai')
+chai.use(require('chai-as-promised'))
+var should = chai.should()
+
+// var cj = require('./codejail')
 var Promise = require('bluebird')
 var _ = require('lodash')
 var path = require('path')
+var os = require('os')
 
 
 // function buildMocks(argument) {
@@ -35,11 +39,20 @@ var path = require('path')
 //   })
 // }
 
+var darwinTest = require('./fix.js').darwin
+
 var testVectors = [{
   type: 'javascript',
-  code: '(code)',
-  output: 'output',
-  message: 'test message',
+  code: 'var x=1',
+  output: darwinTest.test1,
+  opts: '-d',
+  message: 'dry run test, without app-armor',
+  platform: 'all'
+}, {
+  type: 'javascript',
+  code: 'console.log("ciao")',
+  output: 'ciao\n',
+  message: 'wet run test, without app-armor',
   platform: 'all'
 }]
 
@@ -48,7 +61,8 @@ var projDir = path.join(__dirname, "../../")
 function runCommand(t) {
   "use strict"
   return new Promise(function (resolve, reject) {
-    require('shelljs').exec(projDir + "/index.js run -e " + t.type + " '" + t.code + "'", {
+    var cmd = projDir + "index.js run -e " + t.type + " '" + t.code + "' " + (t.opts || '')
+    require('shelljs').exec(cmd, {
       async: true,
       silent: true
     }, function (code, output) {
@@ -61,15 +75,13 @@ function runCommand(t) {
   })
 }
 
-/* global it, describe, os */
+/* global it, describe */
 
 describe("#codejail", function () {
   "use strict"
-  _.map(testVectors, function (t) {
-    if (os.platform() === 'all' || os.platform() === t.platform) {
-      it(t.message + " should work", function () {
-        runCommand(t).should.eventually.be.equal(t.output)
-      })
-    }
+  _.each(testVectors, function (t) {
+    it(t.message + " should work on " + t.platform, function () {
+      return runCommand(t).should.eventually.equal(t.output)
+    })
   })
 })

@@ -20,6 +20,7 @@
     "base64-url": "^1.2.0",
     "bluebird": "^2.8.2",
     "chai": "^1.10.0",
+    "chai-as-promised": "^4.3.0",
     "co": "^4.1.0",
     "co-body": "^1.0.0",
     "co-supertest": "0.0.7",

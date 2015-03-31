@@ -1,5 +1,5 @@
 request    = require('co-supertest')
-{ create } = require('./server')
+{ create } = require('../server')
 expect     = require('chai').expect;
 b64        = require('base64-url')
 
@@ -13,10 +13,10 @@ packet = (student-id, response, payload) ->
 
             xqueue_body: $ ->
 
-                    student_info: $ -> 
+                    student_info: $ ->
                         { anonymized_id: student-id }
 
-                    student_response: response  
+                    student_response: response
 
                     grader_payload: $ ->
                             payload:
@@ -24,13 +24,13 @@ packet = (student-id, response, payload) ->
 
 
 configure-server-dependencies = ->
-    { configure } = require('./das')
+    { configure } = require('../das')
     configure({
-            'fs': 'fs' 
+            'fs': 'fs'
             'shelljs': 'shelljs'
             'os': 'os'
             'uid': 'uid'
-    })   
+    })
 
 configure-server-dependencies!
 
@@ -63,7 +63,7 @@ describe 'Basic request/response protocol', (empty) ->
         res = yield request.post('/').send({+foo}).expect(406).end()
 
 describe 'Compliant requests', (empty) ->
-    it 'should succeed when fake program works', ->* 
+    it 'should succeed when fake program works', ->*
         res = yield rq(packet(333, 'var x = 1;', fake-test-payload))
         expect(res.body.correct).to.equal(true)
 
@@ -119,5 +119,5 @@ describe 'Octave execution', (empty) ->
         o 'x=1'      , "assert(x==2)\nexit(0)" , false , "no! output: Error: 1"           , 'working program, validation fails     '
         ]
 
-    for t in octave-tests 
+    for t in octave-tests
         it t.desc, t.actions
