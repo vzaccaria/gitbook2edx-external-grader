@@ -11,15 +11,15 @@ _module = (profiles) ->
         if not response?
             throw "Sorry, you should specify a response"
         payload.context ?= ""
-        payload.validation ?= ""   
+        payload.validation ?= ""
 
-    grade = (response, payload) -> 
+    grade = (response, payload) ->
         sanitize(response, payload)
         var program
         debug payload
         if profiles[payload.lang]?.code?
             program := profiles[payload.lang].code(response, payload)
-        else 
+        else
             program := """
                 #{payload.context}
                 #{response}
@@ -34,11 +34,11 @@ _module = (profiles) ->
                 { -correct, score: 0, msg: "no! output: #result", program: program }
             else
                 { +correct, score: 1, msg: "ok! output: #result", program: program }
-        
-    iface = { 
+
+    iface = {
         grade: grade
     }
-  
+
     return iface
- 
+
 module.exports = _module(require('./profiles'))

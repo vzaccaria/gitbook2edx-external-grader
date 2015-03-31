@@ -1,0 +1,13 @@
+{
+  "env": {
+    "node": true,
+    "shelljs": true
+  },
+  "rules": {
+    "quotes": "double",
+    "no-extra-semi": false,
+    "semi": "never",
+    "eol-last": false,
+    "no-shadow": false
+  }
+}

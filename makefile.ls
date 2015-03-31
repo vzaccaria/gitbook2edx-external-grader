@@ -1,4 +1,4 @@
-#!/usr/bin/env lsc 
+#!/usr/bin/env lsc
 
 _ = require('lodash')
 { parse, add-plugin } = require('newmake')
@@ -18,17 +18,20 @@ parse ->
 
         @compile-files( f, ".js", g)
 
-    @collect "all", -> 
+    @collect "all", ->
         @command-seq -> [
 
             @collect "compile", -> [
-                @toDir "./lib", { strip: "src" }, -> 
+                @toDir "./lib", { strip: "src" }, ->
                     @livescript ("./src/**/*.ls")
 
-                @toDir "./lib", { strip: "src/test" }, -> 
+                @toDir "./lib", { strip: "src/test" }, ->
                     @livescript ("./src/test/**/*.ls")
 
-                @toDir ".", -> 
+                @toDir "./lib", { strip: "src/test" }, ->
+                        @glob ("./src/test/**/*.js")
+
+                @toDir ".", ->
                     @lsc ("./index.ls")
             ]
             @make 'helpers'
@@ -82,4 +85,3 @@ parse ->
     @collect "s", -> [
         @cmd "./node_modules/.bin/pm2 status"
         ]
-
