@@ -33,6 +33,7 @@ parse ->
             ]
             @make 'helpers'
             @cmd "chmod +x ./index.js"
+            @cmd "./node_modules/.bin/mocha -C --harmony ./lib/test/armor-test.js -R spec"
         ]
 
     @collect "clean", -> [

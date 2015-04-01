@@ -31,6 +31,7 @@
     "lodash": "^2.4.1",
     "mocha-co": "^1.17.1-co.1",
     "moment": "^2.9.0",
+    "newmake": "0.0.8",
     "pm2": "^0.12.5",
     "shelljs": "^0.3.0",
     "supertest": "^0.15.0",
