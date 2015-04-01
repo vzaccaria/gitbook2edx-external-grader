@@ -19,5 +19,8 @@ RUN echo 'deb-src http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main' 
 RUN echo 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main' >> /etc/apt/sources.list.d/clang.list
 RUN apt-get update
 RUN apt-get install -y --force-yes clang-3.5
+RUN apt-get install -y sudo
+RUN apt-get install -y apparmor-utils
 COPY . /src
-RUN cd /src; rm -rf node_modules; npm install; npm test;
+RUN cd /src; rm -rf node_modules; npm install; make update
+RUN cd /src; npm test;

@@ -3,13 +3,17 @@
 _ = require('lodash')
 { parse, add-plugin } = require('newmake')
 
+os = require('os')
+nodePath = "/usr/local/bin/node"
+nodePath = "/usr/bin/node" if os.platform() == 'linux'
+
 parse ->
     @add-plugin "ls", (g) ->
       @compile-files( (-> "./node_modules/.bin/lsc -p -c #{it.orig-complete} > #{it.build-target}" ) , ".js", g)
 
     @add-plugin "lsc", (g) ->
         cmd1 = -> "./node_modules/.bin/lsc -p -c #{it.orig-complete}"
-        echo = -> "echo '#!/usr/local/bin/node --harmony'"
+        echo = -> "echo '#!#{nodePath} --harmony'"
 
         app = (f1, f2) ->
             -> "(#{f1(it)} && #{f2(it)})"
@@ -35,8 +39,10 @@ parse ->
             ]
             @make 'helpers'
             @cmd "chmod +x ./index.js"
-
         ]
+
+    @collect "update", ->
+      @cmd "./node_modules/.bin/lsc makefile.ls"
 
     @collect "clean", -> [
         @remove-all-targets()
@@ -44,7 +50,7 @@ parse ->
     ]
 
     @collect "helpers", -> [
-        @cmd "cd helpers/gitbook2edx-octave-helper && ./makefile.ls && make clean && make"
+        @cmd "cd helpers/gitbook2edx-octave-helper && ../../node_modules/.bin/lsc ./makefile.ls && make clean && make"
         ]
 
     @collect "test", -> [

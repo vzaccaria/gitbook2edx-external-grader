@@ -16,14 +16,14 @@ var testVectors = [{
   output: darwinTest.test1,
   opts: '-d',
   message: 'dry run test, without app-armor',
-  platform: 'all',
+  platform: 'darwin',
   success: true
 }, {
   type: 'javascript',
   code: 'console.log("ciao")',
   output: 'ciao\n',
   message: 'wet run test, without app-armor',
-  platform: 'all',
+  platform: 'darwin',
   success: true
 }, {
   type: 'javascript',
