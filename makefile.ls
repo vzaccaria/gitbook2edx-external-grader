@@ -4,9 +4,11 @@ _ = require('lodash')
 { parse, add-plugin } = require('newmake')
 
 parse ->
+    @add-plugin "ls", (g) ->
+      @compile-files( (-> "./node_modules/.bin/lsc -p -c #{it.orig-complete} > #{it.build-target}" ) , ".js", g)
 
     @add-plugin "lsc", (g) ->
-        cmd1 = -> "lsc -p -c #{it.orig-complete}"
+        cmd1 = -> "./node_modules/.bin/lsc -p -c #{it.orig-complete}"
         echo = -> "echo '#!/usr/local/bin/node --harmony'"
 
         app = (f1, f2) ->
@@ -23,7 +25,7 @@ parse ->
 
             @collect "compile", -> [
                 @toDir "./lib", { strip: "src" }, ->
-                    @livescript ("./src/**/*.ls")
+                    @ls ("./src/**/*.ls")
 
                 @toDir "./lib", { strip: "src" }, ->
                         @glob ("./src/**/*.js")
@@ -42,13 +44,13 @@ parse ->
     ]
 
     @collect "helpers", -> [
-        @cmd "cd helpers/gitbook2edx-octave-helper && ./makefile.ls && make"
+        @cmd "cd helpers/gitbook2edx-octave-helper && ./makefile.ls && make clean && make"
         ]
 
     @collect "test", -> [
         @command-seq -> [
             @make 'clean'
-            @make '-j all'
+            @make 'all'
             @cmd "./node_modules/.bin/mocha -C --harmony ./lib/test/armor-test.js -R spec"
             @cmd "./node_modules/.bin/mocha -C --harmony ./lib/test/server-test.js -R spec"
             ]

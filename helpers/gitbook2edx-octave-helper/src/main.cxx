@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
 			command = format("/usr/local/bin/octave --silent {}", argv[1]);
 		} else {
 			if(shell::test("-e", "/usr/bin/octave")) {
-					command = format("cd `dirname {}` && OCTAVE_HISTFILE=`dirname {}`/.octave_hist /usr/bin/octave --silent {}", argv[1], argv[1], argv[1]);
+				command = format("cd `dirname {}` && OCTAVE_HISTFILE=`dirname {}`/.octave_hist /usr/bin/octave --silent {}", argv[1], argv[1], argv[1]);
 			} else {
 				return 1;
 			}

@@ -1,8 +1,11 @@
-#!/usr/bin/env lsc 
+#!/usr/bin/env lsc
 
 { parse, add-plugin } = require('newmake')
 
+os = require('os')
+
 cppCompiler = "clang++"
+cppCompiler = "clang++-3.5" if os.platform() == "linux"
 
 parse ->
 
@@ -20,7 +23,7 @@ parse ->
                          @clang-pre 'src/cppformat/format.cc'
                          ]
         ]
-        
+
     @collect "all", ->
         @command-seq -> [
             @make "build"
@@ -31,5 +34,3 @@ parse ->
         @remove-all-targets()
         @cmd "rm -rf ./bin"
         ]
-
-

@@ -1,34 +1,34 @@
 .DEFAULT_GOAL := all
 
 .build/0-armor.js: ./src/armor.ls
-	lsc -p -c src/armor.ls > .build/0-armor.js
+	./node_modules/.bin/lsc -p -c src/armor.ls > .build/0-armor.js
 
 .build/1-codejail.js: ./src/codejail.ls
-	lsc -p -c src/codejail.ls > .build/1-codejail.js
+	./node_modules/.bin/lsc -p -c src/codejail.ls > .build/1-codejail.js
 
 .build/2-config.js: ./src/config.ls
-	lsc -p -c src/config.ls > .build/2-config.js
+	./node_modules/.bin/lsc -p -c src/config.ls > .build/2-config.js
 
 .build/3-das.js: ./src/das.ls
-	lsc -p -c src/das.ls > .build/3-das.js
+	./node_modules/.bin/lsc -p -c src/das.ls > .build/3-das.js
 
 .build/4-grader.js: ./src/grader.ls
-	lsc -p -c src/grader.ls > .build/4-grader.js
+	./node_modules/.bin/lsc -p -c src/grader.ls > .build/4-grader.js
 
 .build/5-profiles.js: ./src/profiles.ls
-	lsc -p -c src/profiles.ls > .build/5-profiles.js
+	./node_modules/.bin/lsc -p -c src/profiles.ls > .build/5-profiles.js
 
 .build/6-server.js: ./src/server.ls
-	lsc -p -c src/server.ls > .build/6-server.js
+	./node_modules/.bin/lsc -p -c src/server.ls > .build/6-server.js
 
 .build/7-codejail-test.js: ./src/test/codejail-test.ls
-	lsc -p -c src/test/codejail-test.ls > .build/7-codejail-test.js
+	./node_modules/.bin/lsc -p -c src/test/codejail-test.ls > .build/7-codejail-test.js
 
 .build/8-fix.js: ./src/test/fix.ls
-	lsc -p -c src/test/fix.ls > .build/8-fix.js
+	./node_modules/.bin/lsc -p -c src/test/fix.ls > .build/8-fix.js
 
 .build/9-server-test.js: ./src/test/server-test.ls
-	lsc -p -c src/test/server-test.ls > .build/9-server-test.js
+	./node_modules/.bin/lsc -p -c src/test/server-test.ls > .build/9-server-test.js
 
 lib/armor.js: .build/0-armor.js
 	@mkdir -p ./lib/
@@ -78,7 +78,7 @@ lib/test/armor-test.js: .build/10-armor-test.js
 	cp .build/10-armor-test.js $@
 
 .build/11-index.js: ./index.ls
-	(echo '#!/usr/local/bin/node --harmony' && lsc -p -c index.ls) > .build/11-index.js
+	(echo '#!/usr/local/bin/node --harmony' && ./node_modules/.bin/lsc -p -c index.ls) > .build/11-index.js
 
 index.js: .build/11-index.js
 	@mkdir -p ./.
@@ -125,7 +125,7 @@ clean: clean-15 clean-16 clean-17 cmd-18
 
 .PHONY : cmd-19
 cmd-19: 
-	cd helpers/gitbook2edx-octave-helper && ./makefile.ls && make
+	cd helpers/gitbook2edx-octave-helper && ./makefile.ls && make clean && make
 
 .PHONY : helpers
 helpers: cmd-19
@@ -136,7 +136,7 @@ cmd-20:
 
 .PHONY : cmd-21
 cmd-21: 
-	make -j all
+	make all
 
 .PHONY : cmd-22
 cmd-22: 
