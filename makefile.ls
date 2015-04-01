@@ -33,7 +33,7 @@ parse ->
             ]
             @make 'helpers'
             @cmd "chmod +x ./index.js"
-            @cmd "./node_modules/.bin/mocha -C --harmony ./lib/test/armor-test.js -R spec"
+
         ]
 
     @collect "clean", -> [
@@ -47,10 +47,10 @@ parse ->
 
     @collect "test", -> [
         @command-seq -> [
-            #@make 'clean'
+            @make 'clean'
             @make '-j all'
-            #@cmd "./node_modules/.bin/mocha -C --harmony ./lib/test/server-test.js -R spec"
-            @cmd "./node_modules/.bin/mocha -C ./lib/test/armor-test.js -R spec"
+            @cmd "./node_modules/.bin/mocha -C --harmony ./lib/test/armor-test.js -R spec"
+            @cmd "./node_modules/.bin/mocha -C --harmony ./lib/test/server-test.js -R spec"
             ]
     ]
 

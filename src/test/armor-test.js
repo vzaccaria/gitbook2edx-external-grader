@@ -62,20 +62,6 @@ function runCommand(t) {
 
 /* global it, describe */
 
-describe("#run", function () {
-  "use strict"
-  _.each(testVectors, function (t) {
-    if (os.platform() === t.platform || t.platform === 'all') {
-      it(t.message + " should work on " + t.platform, function () {
-        if (t.success) {
-          return runCommand(t).should.eventually.contain(t.output)
-        } else {
-          return runCommand(t).should.be.rejectedWith(t.output)
-        }
-      })
-    }
-  })
-})
 
 function buildMocks() {
   "use strict"
@@ -107,6 +93,22 @@ function buildMocks() {
     'uid': fakeuid
   })
 }
+
+describe("#command-line", function () {
+  "use strict"
+  _.each(testVectors, function (t) {
+    if (os.platform() === t.platform || t.platform === 'all') {
+      it(t.message + " should work on " + t.platform, function () {
+        if (t.success) {
+          return runCommand(t).should.eventually.contain(t.output)
+        } else {
+          return runCommand(t).should.be.rejectedWith(t.output)
+        }
+      })
+    }
+  })
+})
+
 
 describe("#codejail module", function () {
   "use strict"
