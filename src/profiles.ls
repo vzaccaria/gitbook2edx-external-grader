@@ -1,14 +1,15 @@
 debug = require('debug')('profiles')
 
+{ which } = require('shelljs')
 os = require('os')
 
 _module = ->
-          
-    iface = { 
 
-        'javascript': 
-                path: "/usr/local/bin/node"
-                code: (response, payload) -> 
+    iface = {
+
+        'javascript':
+                path: which('node')
+                code: (response, payload) ->
                     """
 
                     /* require assert for assertions */
@@ -27,7 +28,7 @@ _module = ->
                     }
                     """
 
-        'octave': 
+        'octave':
                 path: "#{__dirname}/../helpers/gitbook2edx-octave-helper/bin/octave-helper"
                 user: 'vagrant'
                 aa: (it, c) -> """
@@ -54,14 +55,13 @@ _module = ->
                     }
                     """
 
-        'fake': 
+        'fake':
                 path: "/bin/cat"
                 aa: -> """
                        """
 
     }
-  
-    return iface
- 
-module.exports = _module()
 
+    return iface
+
+module.exports = _module()
