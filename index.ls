@@ -85,8 +85,11 @@ main = ->
     else
         { code, engine, dry } = get-options!
         configure-cli-dependencies(dry)
-        require('./lib/codejail').run(engine, code).catch ->
-          process.exit(1)
+        require('./lib/codejail').run(engine, code).then ->
+          if it.success? and it.success
+            process.exit(0)
+          else
+            process.exit(1)
 
 
 main!
