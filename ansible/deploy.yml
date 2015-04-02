@@ -1,0 +1,35 @@
+---
+
+-
+
+  # This playbook considers an old Ubuntu 12.04 machine.
+  hosts: deploy-hosts
+
+  sudo: true
+
+  tasks:
+  - include: actions/create-groups.yml
+
+  # Updates package list with the newest NodeJs repo.
+  - shell: curl -sL https://deb.nodesource.com/setup_dev | bash -
+
+  - file: path=/etc/apt/sources.list.d/clang.list state=absent
+
+  # Updates package list with the newest clang
+  - shell: echo 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main' >> /etc/apt/sources.list.d/clang.list
+  - shell: echo 'deb-src http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main' >> /etc/apt/sources.list.d/clang.list
+  - shell: echo 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' >> /etc/apt/sources.list.d/clang.list
+  - shell: echo 'deb-src http://llvm.org/apt/precise/ llvm-toolchain-precise main' >> /etc/apt/sources.list.d/clang.list
+  - shell: echo 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main' >> /etc/apt/sources.list.d/clang.list
+  - shell: echo 'deb-src http://llvm.org/apt/precise/ llvm-toolchain-precise-3.5 main' >> /etc/apt/sources.list.d/clang.list
+  - shell: echo 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main' >> /etc/apt/sources.list.d/clang.list
+  - shell: echo 'deb-src http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main' >> /etc/apt/sources.list.d/clang.list
+  - shell: echo 'deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main' >> /etc/apt/sources.list.d/clang.list
+
+  - apt: update_cache=yes
+
+  - include: actions/install-dev-env.yml
+
+  roles:
+    - vim
+    - utilities

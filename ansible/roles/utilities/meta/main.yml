@@ -1,0 +1,16 @@
+# file: utilities/meta/main.yml
+
+galaxy_info:
+  author: pjan vandaele
+  company: Ansibles
+  description: "Installs a selection of must-have utilities."
+  min_ansible_version: 1.4
+  license: MIT
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  categories:
+  - system
+
+dependencies: []

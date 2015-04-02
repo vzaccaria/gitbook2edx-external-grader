@@ -1,0 +1,13 @@
+- name: create admin group
+  action: group name=admin system=no
+  sudo: yes
+
+- name: create database group
+  action: group name=database system=no
+  sudo: yes
+
+- name: create dev group
+  action: group name=dev system=no
+  sudo: yes
+
+- user: name=zaccaria comment="Main development account" groups=dev append=yes

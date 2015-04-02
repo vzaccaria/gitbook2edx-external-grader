@@ -1,0 +1,10 @@
+---
+
+- name: ensure packages are installed
+  action: apt name={{item}} force=yes
+  with_items:
+      - nodejs
+      - octave
+      - vim
+      - clang-3.5
+      - apparmor-utils

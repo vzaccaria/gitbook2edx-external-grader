@@ -1,0 +1,20 @@
+# file: utilities/defaults/main.yml
+
+utilities_base:
+  - ack-grep
+  - command-not-found
+  - curl
+  - debconf
+  - dmidecode
+  - htop
+  - iftop
+  - iotop
+  - nmap
+  - mosh
+  - pciutils
+  - sysstat
+  - tmux
+  - tshark
+  - git
+
+utilities_extras: []
