@@ -13,7 +13,7 @@ get-options = ->
     get-option = (a, b, def, o) ->
         if not o[a] and not o[b]
             return def
-        else 
+        else
             return o[b]
 
     o = docopt(doc)
@@ -23,7 +23,7 @@ get-options = ->
     engine = get-option('-e', '--engine', 'javascript', o)
     dry    = get-option('-d', '--dry', false, o)
 
-    if o['run'] 
+    if o['run']
         return { serve: false, run: true, code: code, engine: engine, dry: dry, +verbose }
     else
         return { serve: true, run: false, port: port , -verbose}
@@ -31,11 +31,11 @@ get-options = ->
 configure-server-dependencies = ->
     { configure } = require('./lib/das')
     configure({
-            'fs': 'fs' 
+            'fs': 'fs'
             'shelljs': 'shelljs'
             'os': 'os'
             'uid': 'uid'
-    })   
+    })
 
 configure-cli-dependencies = (is-it-dry) ->
     { configure } = require('./lib/das')
@@ -56,20 +56,20 @@ configure-cli-dependencies = (is-it-dry) ->
                 'os': 'os'
                 'uid': 'uid'
             })
-        else 
+        else
             configure({
                 'fs': { writeFile: dryWrite }
                 'shelljs': { exec: dryExec }
                 'os': { tmpdir: -> "faketmp" }
                 'uid': -> 'fakeuid'
-            })        
-    else 
+            })
+    else
         configure({
-            'fs': 'fs' 
+            'fs': 'fs'
             'shelljs': 'shelljs'
             'os': 'os'
             'uid': 'uid'
-        })        
+        })
 
 main = ->
     # Main program configuration
@@ -77,20 +77,16 @@ main = ->
 
     # Parse commands
     { serve, run } = get-options!
-    if serve 
+    if serve
         { port } = get-options!
         configure-server-dependencies()
         server.bringup(port)
 
-    else 
+    else
         { code, engine, dry } = get-options!
         configure-cli-dependencies(dry)
-        require('./lib/codejail').run(engine, code)
+        require('./lib/codejail').run(engine, code).catch ->
+          process.exit(1)
 
 
 main!
-
-
-
-
-
