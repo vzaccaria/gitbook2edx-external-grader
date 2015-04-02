@@ -62,6 +62,15 @@ parse ->
             ]
     ]
 
+    @collect "linux-test", -> [
+        @command-seq -> [
+          @cmd "cd ./ansible/_vagrant && vagrant up"
+          @cmd "ssh vagrant@192.168.33.10 'rm -rf /home/vagrant/gitbook2edx'"
+          @cmd "rsync -rav -e ssh --exclude='node_modules' --exclude='.git' . vagrant@192.168.33.10:/home/vagrant/gitbook2edx"
+          @cmd "ssh vagrant@192.168.33.10  'cd /home/vagrant/gitbook2edx && npm install && make update && make clean && make test'"
+          ]
+        ]
+
 
     for l in ["major", "minor", "patch"]
 
