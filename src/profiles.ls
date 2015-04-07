@@ -42,7 +42,7 @@ _module = ->
                 aa: (it, c) -> """
                     \#include <tunables/global>
 
-                    #it {
+                    #it  {
                         \#include <abstractions/base>
 
 
@@ -52,15 +52,17 @@ _module = ->
                         /usr/local/bin/octave mr,
                         /usr/share/octave/** mr,
                         /usr/lib/x86_64-linux-gnu/octave/** mr,
-                        /usr/bin/octave ix,
+                        /usr/lib/octave/** mr,
+                        /usr/bin/octave*.* ix,
                         /usr/bin/dirname ix,
                         /usr/bin/octave-cli ix,
                         /usr/bin/env ix,
+                        /run/resolvconf/resolv.conf r,
                         #{c.folder-name}/ rw,
                         #{c.folder-name}/** rw,
                         #{c.folder-name}/**/.* rw,
                         #it mr,
-                        #{cpulimit(3, 50, 50)}
+                        #{cpulimit(1, 50, 1)}
                     }
                     """
 

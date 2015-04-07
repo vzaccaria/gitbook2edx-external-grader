@@ -27,7 +27,7 @@ parse ->
     @collect "all", ->
         @command-seq -> [
             @make "build"
-            @cmd "./bin/octave-helper #{__dirname}/fix/t.m"
+            @cmd "DEBUG=edx:* ./bin/octave-helper #{__dirname}/fix/t.m"
             ]
 
     @collect "clean", -> [

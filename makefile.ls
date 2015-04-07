@@ -50,7 +50,7 @@ parse ->
     ]
 
     @collect "helpers", -> [
-        @cmd "cd helpers/gitbook2edx-octave-helper && ../../node_modules/.bin/lsc ./makefile.ls && make clean && make"
+        @cmd "cd helpers/gitbook2edx-octave-helper && ../../node_modules/.bin/lsc ./makefile.ls && make clean && DEBUG=edx:* make"
         ]
 
     @collect "test-server", -> [

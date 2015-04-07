@@ -4,11 +4,19 @@
 
 config = require('./config')
 
+/*Just use this if you want to debug:
+
+config.set({verbose: true})
+
+*/
+
 _module = (_, moment, fs, $, __, co, debug, uid, os) ->
     ->
         cmd        = ->
             $.promisify(__.exec)(it, {+async, silent: (not config.get!.verbose) }).then ->
+                debug "Program output"
                 debug it
+                debug "Got it?"
                 it
         writeAsync = $.promisify(fs.writeFile)
         temp-dir   = os.tmpdir()

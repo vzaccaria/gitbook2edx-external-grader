@@ -4,6 +4,7 @@ co = require('co')
 expect     = require('chai').expect;
 b64        = require('base64-url')
 debug = require('debug')('edx:server-test')
+os = require('os')
 
 app = create!
 
@@ -127,6 +128,13 @@ describe '#server', (empty) ->
           o 'x=1'      , "assert(x==1)\nexit(0)" , true  , "ok! output: x =  1\n\n\n"       , 'working program, validation succ      '
           o 'x=1'      , "assert(x==2)\nexit(0)" , false , "no! output: Error: 1"           , 'working program, validation fails     '
           ]
+
+      octave-linux = [
+          o 'y=0; for x=1:100000000; y=y+1; end', 'exit(0)', false, "no! output: Error: 1", "working program, breaks cpu limits (1sec)"
+      ]
+
+      if os.platform() == "linux"
+        octave-tests = octave-tests ++ octave-linux
 
       for t in octave-tests
           it t.desc, t.actions
