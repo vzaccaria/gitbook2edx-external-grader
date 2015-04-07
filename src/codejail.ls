@@ -115,7 +115,7 @@ module.exports = _module(
     require 'bluebird'
     required! 'shelljs'
     require 'co'
-    require('debug')('codejail')
+    require('debug')('edx:codejail')
     required! 'uid'
     required! 'os'
     )()

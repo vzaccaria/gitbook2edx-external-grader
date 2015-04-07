@@ -1,6 +1,6 @@
 "use strict"
 _     = require('lodash')
-debug = require('debug')('das')
+debug = require('debug')('edx:das')
 
 var configuration
 
@@ -8,17 +8,16 @@ configure = (hash-of-module-names) ->
     configuration := _.mapValues hash-of-module-names, (value, name, object) ->
         if _.is-string(value)
             return require(value)
-        else 
+        else
             return value
 
 required = ->
-    return (it) -> 
+    return (it) ->
         configuration[it]
 
-iface = { 
+iface = {
     configure: configure
     required: required
 }
 
 module.exports = iface
-

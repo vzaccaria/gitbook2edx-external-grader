@@ -1,7 +1,15 @@
-debug = require('debug')('profiles')
+debug = require('debug')('edx:profiles')
 
 { which } = require('shelljs')
 os = require('os')
+
+cpulimit = (seconds, dataM, stackM) ->
+  # http://wiki.apparmor.net/index.php/AppArmor_Core_Policy_Reference#Rlimit_rules
+  """
+  set rlimit cpu <= #{seconds},
+  set rlimit data <= #{dataM}M,
+  set rlimit stack <= #{stackM}M,
+  """
 
 _module = ->
 
@@ -52,6 +60,7 @@ _module = ->
                         #{c.folder-name}/** rw,
                         #{c.folder-name}/**/.* rw,
                         #it mr,
+                        #{cpulimit(3, 50, 50)}
                     }
                     """
 

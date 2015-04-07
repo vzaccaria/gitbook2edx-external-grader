@@ -2,7 +2,7 @@
 
 _module = (_, moment, fs, $, __, koa, co-body, b64, debug, grader) ->
     var app
-    debug     = debug 'server'
+    debug     = debug 'edx:server'
     { grade } = grader
     create = ->
         app := koa()
@@ -11,12 +11,12 @@ _module = (_, moment, fs, $, __, koa, co-body, b64, debug, grader) ->
 
         debug "koa registered"
 
-        app.use ->* 
+        app.use ->*
             debug "request received"
             if @method != 'POST'
                 @throw 404, 'sorry, only POST methods allowed'
-            else 
-                try 
+            else
+                try
                     data = {}
                     req = (yield parse.json(@.req))
                     semi = JSON.parse(req.xqueue_body)
@@ -28,8 +28,8 @@ _module = (_, moment, fs, $, __, koa, co-body, b64, debug, grader) ->
                     debug data.grader_payload
                     grader-response = yield grade(data.student_response, data.grader_payload)
                     @body = grader-response
-                catch 
-                    debug(e)
+                catch
+                    debug("Responding with 406 on #{e}")
                     @response.status = 406
                     @response.body = { message: e }
 
@@ -40,28 +40,22 @@ _module = (_, moment, fs, $, __, koa, co-body, b64, debug, grader) ->
         debug "listening on: http://localhost:#port"
         return create!.listen(port)
 
-    iface = { 
+    iface = {
         create: create
         bringup: bringup
     }
-  
+
     return iface
 
 module.exports = _module(
-    require('lodash'), 
-    require('moment'), 
-    require('fs'), 
-    require('bluebird'), 
-    require('shelljs'), 
-    require('koa'), 
-    require('co-body'), 
-    require('base64-url'), 
-    require('debug'), 
-    require('./grader') 
+    require('lodash'),
+    require('moment'),
+    require('fs'),
+    require('bluebird'),
+    require('shelljs'),
+    require('koa'),
+    require('co-body'),
+    require('base64-url'),
+    require('debug'),
+    require('./grader')
     )
-
-
-
-#-> require! { './grader': {mocked} }
-
-

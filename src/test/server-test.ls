@@ -1,7 +1,9 @@
 request    = require('co-supertest')
+co = require('co')
 { create } = require('../server')
 expect     = require('chai').expect;
 b64        = require('base64-url')
+debug = require('debug')('edx:server-test')
 
 app = create!
 
@@ -56,19 +58,23 @@ rqfail = -> request.post('/').send(it).set('Accept', 'application/json').expect(
 
 describe '#server', (empty) ->
   describe 'Basic request/response protocol', (empty) ->
-      it 'should return 404 when method is not post', ->*
+      it 'should return 404 when method is not post', ->
+        co ->*
           res = yield request.get('/').expect(404).end()
           expect(res.text).to.equal('sorry, only POST methods allowed')
 
-      it 'should return an error when the request is not compliant with specs', ->*
+      it 'should return an error when the request is not compliant with specs', ->
+        co ->*
           res = yield request.post('/').send({+foo}).expect(406).end()
 
   describe 'Compliant requests', (empty) ->
-      it 'should succeed when fake program works', ->*
+      it 'should succeed when fake program works', ->
+        co ->*
           res = yield rq(packet(333, 'var x = 1;', fake-test-payload))
           expect(res.body.correct).to.equal(true)
 
-      it 'should not run a program without a language id', ->*
+      it 'should not run a program without a valid language id', ->
+        co ->*
           res = yield rqfail(packet(333, 'var x=1; console.log(x);', { validation: "" }))
 
 
@@ -77,7 +83,8 @@ describe '#server', (empty) ->
   describe 'Javascript execution', (empty) ->
 
       o = (program, validation, correct, msg, desc) ->
-          actions = ->*
+          actions = ->
+            co ->*
               res = yield rq(packet(333, program, { lang: 'javascript', validation: validation }))
               expect(res.body.msg).to.equal(msg)
               expect(res.body.correct).to.equal(correct)
@@ -103,7 +110,8 @@ describe '#server', (empty) ->
   describe 'Octave execution', (empty) ->
 
       o = (program, validation, correct, msg, desc) ->
-          actions = ->*
+          actions = ->
+            co ->*
               res = yield rq(packet(333, program, { lang: 'octave', validation: validation }))
               expect(res.body.msg).to.equal(msg)
               expect(res.body.correct).to.equal(correct)

@@ -53,6 +53,14 @@ parse ->
         @cmd "cd helpers/gitbook2edx-octave-helper && ../../node_modules/.bin/lsc ./makefile.ls && make clean && make"
         ]
 
+    @collect "test-server", -> [
+        @command-seq -> [
+                @make 'compile'
+                @cmd "./node_modules/.bin/mocha -C --harmony ./lib/test/server-test.js -R spec"
+                ]
+        ]
+
+
     @collect "test", -> [
         @command-seq -> [
             @make 'clean'
@@ -71,6 +79,12 @@ parse ->
           ]
         ]
 
+    @collect "quick-linux-test", -> [
+            @command-seq -> [
+              @cmd "rsync -rav -e ssh --exclude='node_modules' --exclude='.git' . vagrant@192.168.33.10:/home/vagrant/gitbook2edx"
+              @cmd "ssh vagrant@192.168.33.10  'cd /home/vagrant/gitbook2edx && make update && make clean && make test'"
+              ]
+            ]
 
     for l in ["major", "minor", "patch"]
 

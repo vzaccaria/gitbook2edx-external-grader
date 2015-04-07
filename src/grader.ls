@@ -1,6 +1,6 @@
 "use strict"
 
-debug = require('debug')('grader')
+debug = require('debug')('edx:grader')
 
 
 _module = (profiles) ->
@@ -30,7 +30,7 @@ _module = (profiles) ->
         return run(payload.lang, program)
         .then ->
             { success, result } = it
-            if not success 
+            if not success
                 { -correct, score: 0, msg: "no! output: #result", program: program }
             else
                 { +correct, score: 1, msg: "ok! output: #result", program: program }

@@ -13,7 +13,7 @@ writeAsync = $.promisify(fs.writeFile)
 co         = require 'co'
 
 
-debug = require('debug')('armor')
+debug = require('debug')('edx:armor')
 
 _module = ->
 
@@ -22,41 +22,40 @@ _module = ->
 
     deploy-profile = (profile-path, profile) ->
         if os.platform() == 'linux'
-            (co ->* 
+            (co ->*
                 yield writeAsync(profile-path, profile, 'utf-8')
                 yield cmd("sudo apparmor_parser -a #profile-path"))
-        else 
-            co ->* 
+        else
+            co ->*
                 yield writeAsync(profile-path, profile, 'utf-8')
 
-                
+
 
     run-profile = (user, profile-path, script) ->
         if os.platform() == 'linux'
             pre = ""
             if user?
                 pre := "sudo -u #user"
-            else 
+            else
                 pre := "sudo"
             return "#pre aa-exec -f #profile-path #script"
-        else 
+        else
             return script
 
     remove-profile = (profile-path) ->
         if os.platform() == 'linux'
-            (co ->* 
+            (co ->*
                 yield cmd("sudo apparmor_parser -R #profile-path"))
-        else 
+        else
             co ->* true
 
-          
-    iface = { 
+
+    iface = {
         deploy-profile: deploy-profile
         run-profile: run-profile
         remove-profile: remove-profile
     }
-  
-    return iface
- 
-module.exports = _module()
 
+    return iface
+
+module.exports = _module()
