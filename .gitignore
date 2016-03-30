@@ -6,3 +6,4 @@ helpers/gitbook2edx-octave-helper/makefile
 index.js
 lib
 makefile
+node_modules.old

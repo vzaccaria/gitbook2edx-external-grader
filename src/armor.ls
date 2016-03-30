@@ -1,4 +1,3 @@
-
 "use strict"
 
 { required } = require('./das')

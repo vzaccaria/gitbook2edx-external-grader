@@ -96,7 +96,7 @@ parse ->
     @collect "start", -> [
         @command-seq -> [
             @make "all"
-            @cmd  "./node_modules/.bin/pm2 start ./grader.json"
+            @cmd  "./node_modules/.bin/pm2 start ./other/grader.json"
             @cmd  "./node_modules/.bin/pm2 start /usr/local/bin/ngrok --interpreter none -x -- start grader"
             @cmd  "./node_modules/.bin/pm2 logs grader"
             @cmd  "echo 'Connect to http://localhost:4040 to watch for incoming traffic"
